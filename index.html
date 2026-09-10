@@ -7,12 +7,35 @@
 <title>SPIRE</title>
 <link rel="icon" type="image/png" href="./SPIRE.png">
 <style>
-:root{--black:#000;--white:#fff;--ease:cubic-bezier(.22,.8,.22,1)}
+:root{
+--black:#000;
+--white:#fff;
+--beige:#C8A27A;
+--beige-dark:#A9825D;
+--ease:cubic-bezier(.22,.8,.22,1)
+}
+
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#000!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif}
-body{overflow-x:hidden;background-image:none!important}
-a,button,input{font:inherit}
-button{cursor:pointer}
+
+html,body{
+margin:0;
+min-height:100%;
+background:#000;
+color:#fff;
+font-family:Arial,Helvetica,sans-serif
+}
+
+body{
+overflow-x:hidden
+}
+
+a,button,input{
+font:inherit
+}
+
+button{
+cursor:pointer
+}
 
 .siteHeader{
 position:sticky;
@@ -24,15 +47,11 @@ justify-content:space-between;
 gap:18px;
 min-height:68px;
 padding:12px clamp(16px,5vw,64px);
-background:#000!important;
-border-bottom:1px solid #fff;
+background:#000;
+border-bottom:1px solid rgba(200,162,122,.45);
 color:#fff;
 isolation:isolate;
-transition:transform .35s var(--ease)
-}
-
-.siteHeader.headerHidden{
-transform:translateY(-110%)
+will-change:transform
 }
 
 .brand{
@@ -44,9 +63,12 @@ font-weight:800;
 letter-spacing:.5px
 }
 
-.brand strong{color:#fff}
+.brand strong{
+color:#fff
+}
 
-.brand:hover,.brand:focus
+.brand:hover,
+.brand:focus
 
 .nav{
 display:flex;
@@ -60,21 +82,27 @@ justify-content:center;
 gap:8px;
 min-width:82px;
 padding:10px 14px;
-background:#000!important;
-color:#fff!important;
-border:1px solid #fff;
-border-radius:0;
-box-shadow:none!important;
-filter:none!important;
+background:#000;
+color:#fff;
+border:1px solid var(--beige);
+border-radius:8px;
+box-shadow:0 0 0 0 rgba(200,162,122,0);
 text-decoration:none;
-transition:background .18s,color .18s,transform .18s var(--ease)
+transition:
+background .18s ease,
+color .18s ease,
+border-color .18s ease,
+transform .18s var(--ease),
+box-shadow .18s ease
 }
 
-.navButton:hover,.navButton:focus{
-background:#000!important;
-color:#fff!important;
-border-color:#fff;
-box-shadow:none!important;
+.navButton:hover,
+.navButton:focus{
+background:var(--beige);
+color:#000;
+border-color:var(--beige);
+box-shadow:0 5px 20px rgba(200,162,122,.18);
+transform:translateY(-2px);
 outline:none
 }
 
@@ -82,7 +110,7 @@ outline:none
 width:17px;
 height:17px;
 fill:none;
-stroke:#fff;
+stroke:currentColor;
 stroke-width:1.8;
 stroke-linecap:round;
 stroke-linejoin:round
@@ -101,8 +129,7 @@ margin:0 auto;
 padding:34px clamp(16px,5vw,64px) 64px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:20px;
-background:#000!important
+gap:20px
 }
 
 .game{
@@ -110,69 +137,57 @@ position:relative;
 z-index:1;
 min-height:171px;
 padding:10px;
-background:#000!important;
-color:#fff!important;
-border:1px solid #fff;
-border-radius:0;
-box-shadow:none!important;
-filter:none!important;
+background:#000;
+color:#fff;
+border:1px solid rgba(200,162,122,.55);
+border-radius:12px;
+box-shadow:0 8px 30px rgba(0,0,0,.35);
 will-change:transform;
 transform-origin:center;
 cursor:pointer;
-transition:background .18s,color .18s,transform .18s var(--ease);
-animation:cardIn .45s var(--ease) both
+transition:
+border-color .18s ease,
+box-shadow .18s ease
 }
 
-.game:hover,.game:focus-within{
-z-index:1;
-background:#000!important;
-color:#fff!important;
-border:1px solid #fff;
-box-shadow:none!important;
-filter:none!important;
+.game:hover,
+.game:focus-within{
+border-color:var(--beige);
+box-shadow:0 12px 35px rgba(200,162,122,.12);
 outline:none
 }
 
 .gameLink{
 display:block;
 height:100%;
-background:#000!important;
-color:#fff!important;
+background:#000;
+color:#fff;
 text-decoration:none
 }
 
-.gameLink:hover,.gameLink:focus
+.gameLink:hover,
+.gameLink:focus
 
 .game img{
 display:block;
 width:100%;
 height:151px;
 object-fit:cover;
-background:#fff!important;
-border:1px solid #fff;
-border-radius:0;
-box-shadow:none!important;
-filter:none!important;
-transition:none
+background:#111;
+border:1px solid rgba(200,162,122,.35);
+border-radius:8px;
+transition:border-color .18s ease
 }
 
 .game:hover img{
-background:#fff!important;
-filter:none!important;
-box-shadow:none!important
-}
-
-.game::before,.game::after,.gameLink::before,.gameLink::after{
-display:none!important;
-content:none!important;
-box-shadow:none!important
+border-color:var(--beige)
 }
 
 #gamesPage{
 display:none;
 position:relative;
 z-index:1;
-background:#000!important
+background:#000
 }
 
 #passwordScreen{
@@ -181,19 +196,20 @@ inset:0;
 z-index:2000;
 display:grid;
 place-items:center;
-background:#000!important;
+background:#000;
 color:#fff
 }
 
 .passwordBox{
 width:min(420px,calc(100vw - 32px));
-padding:30px;
-background:#000!important;
-color:#fff!important;
-border:1px solid #fff;
-border-radius:0;
-box-shadow:none!important;
-filter:none!important;
+padding:34px;
+background:#111;
+color:#fff;
+border:2px solid rgba(200,162,122,.65);
+border-radius:15px;
+box-shadow:
+0 0 35px rgba(200,162,122,.08),
+0 20px 70px rgba(0,0,0,.55);
 text-align:center;
 animation:panelIn .5s var(--ease) both
 }
@@ -206,20 +222,24 @@ font-size:25px
 
 .passwordBox p{
 margin:0 0 18px;
-color:#fff
+color:#bbb
 }
 
 .passwordBox input{
 width:100%;
-padding:12px;
-background:#fff!important;
-color:#000!important;
-border:1px solid #fff;
-border-radius:0;
-outline:none
+padding:12px 14px;
+background:#fff;
+color:#000;
+border:2px solid #fff;
+border-radius:8px;
+outline:none;
+transition:border-color .18s ease,box-shadow .18s ease
 }
 
-.passwordBox input:focus
+.passwordBox input:focus{
+border-color:var(--beige);
+box-shadow:0 0 0 3px rgba(200,162,122,.18)
+}
 
 .passwordBox button{
 display:inline-flex;
@@ -229,32 +249,35 @@ gap:8px;
 width:100%;
 margin-top:14px;
 padding:12px;
-background:#000!important;
-color:#fff!important;
-border:1px solid #fff;
-border-radius:0;
-box-shadow:none!important;
-filter:none!important;
-transition:background .18s,color .18s,transform .18s var(--ease)
+background:var(--beige);
+color:#000;
+border:2px solid var(--beige);
+border-radius:8px;
+box-shadow:0 5px 20px rgba(200,162,122,.12);
+transition:
+background .18s ease,
+color .18s ease,
+transform .18s var(--ease),
+box-shadow .18s ease
 }
 
-.passwordBox button:hover,.passwordBox button:focus{
-background:#000!important;
-color:#fff!important;
-border-color:#fff;
-box-shadow:none!important;
+.passwordBox button:hover,
+.passwordBox button:focus{
+background:var(--beige-dark);
+color:#000;
+transform:translateY(-2px);
+box-shadow:0 8px 25px rgba(200,162,122,.2);
 outline:none
 }
 
 .passwordBox.errorState{
-border:1px solid #f00!important;
-box-shadow:none!important;
+border-color:#f00!important;
 animation:passwordErrorShake .48s ease-in-out both!important
 }
 
 .passwordBox.errorState h2,
 .passwordBox.errorState p{
-color:#fff!important
+color:#fff
 }
 
 .passwordBox.entering{
@@ -284,18 +307,22 @@ transform:translateY(0)
 transform:translateY(-100%)
 }
 
-@keyframes cardIn{
-from{opacity:0;transform:translateY(12px)}
-to{opacity:1;transform:none}
-}
-
 @keyframes panelIn{
-from{opacity:0;transform:translateY(14px)}
-to{opacity:1;transform:none}
+from{
+opacity:0;
+transform:translateY(14px) scale(.98)
+}
+to{
+opacity:1;
+transform:none
+}
 }
 
 @keyframes panelOut{
-to{opacity:0;transform:translateY(-12px)}
+to{
+opacity:0;
+transform:translateY(-12px) scale(.98)
+}
 }
 
 @keyframes passwordErrorShake{
@@ -330,21 +357,22 @@ min-height:183px
 .game img{
 height:163px
 }
+
+.passwordBox{
+padding:28px
+}
 }
 
 @media(prefers-reduced-motion:reduce){
-*,*:before,*:after{
+*,
+*:before,
+*:after{
 animation-duration:.001ms!important;
 transition-duration:.001ms!important
-}
-
-.siteHeader{
-transform:none!important
 }
 } </style>
 
 </head>
-
 <body>
 
 <div class="page-transition" id="pageTransition" aria-hidden="true"></div>
@@ -364,15 +392,12 @@ Enter
 </div>
 
 <div id="website">
-
 <header class="siteHeader">
-
 <a class="brand" href="#" id="brandHome" aria-label="SheaGames home">
 <strong>SheaGames</strong>
 </a>
 
 <nav class="nav">
-
 <a class="navButton" href="#" id="homeButton">
 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
 <path d="m3 11 9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
@@ -389,26 +414,21 @@ Home
 </svg>
 Games
 </a>
-
 </nav>
 </header>
 
 <main>
 <section class="games" id="gameList" aria-label="Popular games"></section>
 </main>
-
 </div>
 
 <div id="gamesPage">
-
 <header class="siteHeader">
-
 <a class="brand" href="#" id="brandGames" aria-label="SheaGames home">
 <strong>SheaGames</strong>
 </a>
 
 <nav class="nav">
-
 <a class="navButton" href="#" id="homeButton2">
 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
 <path d="m15 18-6-6 6-6M9 12h11"/>
@@ -425,19 +445,20 @@ Home
 </svg>
 Games
 </a>
-
 </nav>
 </header>
 
 <main>
 <section class="games" id="allGameList" aria-label="All games"></section>
 </main>
-
 </div>
 
 <script>
-const GAME_COUNT=100,HOME_GAME_COUNT=8;
-let passwordLocked=false,transitionBusy=false;
+const GAME_COUNT=100;
+const HOME_GAME_COUNT=8;
+
+let passwordLocked=false;
+let transitionBusy=false;
 
 function getTodayKey(){
 const d=new Date();
@@ -456,7 +477,9 @@ saved=null
 
 if(!saved||saved.date!==today){
 saved={date:today,visits:{}};
+try{
 localStorage.setItem("sheaGamePopularity",JSON.stringify(saved))
+}catch(e){}
 }
 
 return saved
@@ -465,13 +488,19 @@ return saved
 function recordVisit(number){
 const data=getPopularity();
 data.visits[number]=(data.visits[number]||0)+1;
+
+try{
 localStorage.setItem("sheaGamePopularity",JSON.stringify(data))
+}catch(e){}
 }
 
 function getPopularGames(){
 const data=getPopularity();
 
-return Array.from({length:GAME_COUNT},(_,i)=>i+1).sort(
+return Array.from(
+{length:GAME_COUNT},
+(_,i)=>i+1
+).sort(
 (a,b)=>(data.visits[b]||0)-(data.visits[a]||0)||a-b
 )
 }
@@ -481,7 +510,6 @@ const extensions=["png","jpg","jpeg","webp"];
 let index=0;
 
 function next(){
-
 if(index>=extensions.length){
 img.style.visibility="hidden";
 return
@@ -491,7 +519,8 @@ const test=new Image();
 const extension=extensions[index++];
 
 test.onload=()=>{
-img.src=number+"."+extension
+img.src=number+"."+extension;
+img.style.visibility="visible"
 };
 
 test.onerror=next;
@@ -502,16 +531,10 @@ next()
 }
 
 function gameCard(number){
-
 const card=document.createElement("div");
-
 card.className="game";
 
-card.style.animationDelay=
-Math.min(number%8,7)*35+"ms";
-
 const link=document.createElement("a");
-
 link.className="gameLink";
 link.href="loader.html?game="+encodeURIComponent(number);
 
@@ -520,7 +543,6 @@ recordVisit(number)
 });
 
 const img=document.createElement("img");
-
 img.alt="Game "+number;
 
 findImage(number,img);
@@ -532,9 +554,7 @@ return card
 }
 
 function addCursorFollow(elements,strengthX,strengthY,rotation){
-
 elements.forEach(element=>{
-
 let x=0;
 let y=0;
 let targetX=0;
@@ -543,16 +563,17 @@ let vx=0;
 let vy=0;
 
 element.addEventListener("pointermove",event=>{
-
 if(event.pointerType==="touch")return;
 
 const rect=element.getBoundingClientRect();
 
 targetX=
-((event.clientX-rect.left-rect.width/2)/(rect.width/2))*strengthX;
+((event.clientX-rect.left-rect.width/2)/(rect.width/2))
+*strengthX;
 
 targetY=
-((event.clientY-rect.top-rect.height/2)/(rect.height/2))*strengthY
+((event.clientY-rect.top-rect.height/2)/(rect.height/2))
+*strengthY
 });
 
 element.addEventListener("pointerleave",()=>{
@@ -561,7 +582,6 @@ targetY=0
 });
 
 function animate(){
-
 vx+=(targetX-x)*.16;
 vy+=(targetY-y)*.16;
 
@@ -575,8 +595,7 @@ element.style.transform=
 "translate3d("+
 x.toFixed(2)+"px,"+
 y.toFixed(2)+"px,0) rotate("+
-((vx-vy)*rotation).toFixed(2)+
-"deg)";
+((vx-vy)*rotation).toFixed(2)+"deg)";
 
 requestAnimationFrame(animate)
 }
@@ -586,32 +605,24 @@ animate()
 }
 
 function renderHomeGames(){
-
 const list=document.getElementById("gameList");
-
 list.innerHTML="";
 
 let homeGames;
 
 try{
-
 const popular=getPopularGames();
 
 homeGames=
 popular&&popular.length>=HOME_GAME_COUNT
 ?popular.slice(0,HOME_GAME_COUNT)
-:Array.from(
-{length:HOME_GAME_COUNT},
-(_,i)=>i+1
-)
+:Array.from({length:HOME_GAME_COUNT},(_,i)=>i+1);
 
 }catch(error){
-
 homeGames=Array.from(
 {length:HOME_GAME_COUNT},
 (_,i)=>i+1
 )
-
 }
 
 homeGames.forEach(number=>{
@@ -627,9 +638,7 @@ list.querySelectorAll(".game"),
 }
 
 function renderAllGames(){
-
 const list=document.getElementById("allGameList");
-
 list.innerHTML="";
 
 for(let i=1;i<=GAME_COUNT;i++){
@@ -645,109 +654,77 @@ list.querySelectorAll(".game"),
 }
 
 function switchPage(from,to,direction="forward"){
-
 if(transitionBusy)return;
 
 transitionBusy=true;
 
 const veil=document.getElementById("pageTransition");
-
-const reduce=
-matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 veil.style.transform=
 direction==="back"
 ?"translateY(-100%)"
 :"translateY(100%)";
 
-from.classList.add("pageHidden");
+from.style.display="none";
 
 setTimeout(()=>{
-
 veil.classList.add("is-active");
 
 setTimeout(()=>{
-
-from.style.display="none";
 to.style.display="block";
-to.classList.add("pageHidden");
-
 window.scrollTo({
 top:0,
-behavior:reduce?"auto":"smooth"
+behavior:"auto"
 });
 
-requestAnimationFrame(()=>requestAnimationFrame(()=>{
-
-to.classList.remove("pageHidden");
-
+requestAnimationFrame(()=>{
 to.querySelectorAll(".game").forEach((card,i)=>{
-
 card.style.opacity="0";
 card.style.transform="translateY(14px)";
 
 setTimeout(()=>{
-
 card.style.opacity="";
 card.style.transform=""
-
-},i*25)
-
+},i*20)
 });
 
-setTimeout(
-()=>veil.classList.add("is-leaving"),
-reduce?0:180
-);
+setTimeout(()=>{
+veil.classList.add("is-leaving")
+},reduce?0:180);
 
-setTimeout(
-()=>veil.classList.remove("is-active","is-leaving"),
-reduce?30:700
-)
-
-}))
+setTimeout(()=>{
+veil.classList.remove("is-active","is-leaving")
+},reduce?30:700)
+})
 
 },reduce?15:280)
 
 },reduce?0:150);
 
-setTimeout(
-()=>{transitionBusy=false},
-reduce?80:1050
-)
+setTimeout(()=>{
+transitionBusy=false
+},reduce?80:1050)
 }
 
 const website=document.getElementById("website");
 const gamesPage=document.getElementById("gamesPage");
 
 function showHome(){
-
 if(transitionBusy||website.style.display==="block")return;
 
 renderHomeGames();
-
-switchPage(
-gamesPage,
-website,
-"back"
-)
+switchPage(gamesPage,website,"back")
 }
 
 function showGames(){
-
 if(transitionBusy||gamesPage.style.display==="block")return;
 
 renderAllGames();
-
-switchPage(
-website,
-gamesPage,
-"forward"
-)
+switchPage(website,gamesPage,"forward")
 }
 
 function bind(id,handler){
-
 document.getElementById(id).addEventListener(
 "click",
 event=>{
@@ -765,7 +742,6 @@ bind("brandHome",showHome);
 bind("brandGames",showHome);
 
 function checkPassword(){
-
 if(passwordLocked)return;
 
 const input=document.getElementById("passwordInput");
@@ -776,17 +752,12 @@ if(input.value==="SHEA"){
 box.classList.add("entering");
 
 setTimeout(()=>{
-
 document.getElementById("passwordScreen").classList.add("hidden");
 
 setTimeout(()=>{
-
 document.getElementById("passwordScreen").style.display="none";
-
 website.style.display="block";
-
-renderHomeGames();
-
+renderHomeGames()
 },550)
 
 },100)
@@ -801,82 +772,71 @@ void box.offsetWidth;
 
 box.classList.add("errorState");
 
-input.setAttribute(
-"aria-invalid",
-"true"
-);
+input.setAttribute("aria-invalid","true");
 
 setTimeout(()=>{
-
 box.classList.remove("errorState");
-
 input.removeAttribute("aria-invalid");
-
 input.value="";
-
 input.focus();
-
 passwordLocked=false
-
 },900)
 }
 }
 
-document.getElementById("passwordButton").addEventListener(
-"click",
-checkPassword
-);
+document.getElementById("passwordButton")
+.addEventListener("click",checkPassword);
 
-document.getElementById("passwordInput").addEventListener(
-"keydown",
-event=>{
+document.getElementById("passwordInput")
+.addEventListener("keydown",event=>{
 if(event.key==="Enter")checkPassword()
-}
-);
+});
 
-let lastScrollY=window.scrollY;
-let scrollTick=false;
+let previousScroll=window.scrollY;
+let headerOffset=0;
+let ticking=false;
 
-function handleHeaderScroll(){
-
-const currentScrollY=window.scrollY;
+function updateHeader(){
+const currentScroll=window.scrollY;
+const delta=currentScroll-previousScroll;
 const headers=document.querySelectorAll(".siteHeader");
 
-if(currentScrollY<=10){
-
-headers.forEach(header=>{
-header.classList.remove("headerHidden")
-});
-
-}else if(currentScrollY>lastScrollY){
-
-headers.forEach(header=>{
-header.classList.add("headerHidden")
-});
-
-}else if(currentScrollY<lastScrollY){
-
-headers.forEach(header=>{
-header.classList.remove("headerHidden")
-});
-
+if(currentScroll<=0){
+headerOffset=0
+}else{
+headerOffset+=delta;
+headerOffset=Math.max(
+0,
+Math.min(
+68,
+headerOffset
+)
+)
 }
 
-lastScrollY=currentScrollY;
-scrollTick=false
+headers.forEach(header=>{
+header.style.transform=
+"translateY(-"+headerOffset+"px)"
+});
+
+previousScroll=currentScroll;
+ticking=false
 }
 
 window.addEventListener("scroll",()=>{
-
-if(!scrollTick){
-
-requestAnimationFrame(handleHeaderScroll);
-
-scrollTick=true
-
+if(!ticking){
+requestAnimationFrame(updateHeader);
+ticking=true
 }
-
 },{passive:true});
+
+window.addEventListener("resize",()=>{
+document.querySelectorAll(".siteHeader").forEach(header=>{
+header.style.transform=
+"translateY(-"+Math.min(headerOffset,header.offsetHeight)+"px)"
+})
+});
+
 </script>
 
 </body>
