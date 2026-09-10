@@ -7,35 +7,12 @@
 <title>SPIRE</title>
 <link rel="icon" type="image/png" href="./SPIRE.png">
 <style>
-:root{
---black:#000;
---white:#fff;
---beige:#C8A27A;
---beige-dark:#A9825D;
---ease:cubic-bezier(.22,.8,.22,1)
-}
-
+:root{--black:#000;--white:#fff;--ease:cubic-bezier(.22,.8,.22,1)}
 *{box-sizing:border-box}
-
-html,body{
-margin:0;
-min-height:100%;
-background:#000;
-color:#fff;
-font-family:Arial,Helvetica,sans-serif
-}
-
-body{
-overflow-x:hidden
-}
-
-a,button,input{
-font:inherit
-}
-
-button{
-cursor:pointer
-}
+html,body{margin:0;min-height:100%;background:#000!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif}
+body{overflow-x:hidden;background-image:none!important}
+a,button,input{font:inherit}
+button{cursor:pointer}
 
 .siteHeader{
 position:sticky;
@@ -47,33 +24,18 @@ justify-content:space-between;
 gap:18px;
 min-height:68px;
 padding:12px clamp(16px,5vw,64px);
-background:#000;
-border-bottom:1px solid rgba(200,162,122,.45);
+background:#000!important;
+border-bottom:1px solid #fff;
 color:#fff;
 isolation:isolate;
 will-change:transform
 }
 
-.brand{
-display:flex;
-align-items:center;
-color:#fff;
-text-decoration:none;
-font-weight:800;
-letter-spacing:.5px
-}
+.brand{display:flex;align-items:center;color:#fff;text-decoration:none;font-weight:800;letter-spacing:.5px}
+.brand strong{color:#fff}
+.brand:hover,.brand:focus
 
-.brand strong{
-color:#fff
-}
-
-.brand:hover,
-.brand:focus
-
-.nav{
-display:flex;
-gap:10px
-}
+.nav{display:flex;gap:10px}
 
 .navButton{
 display:inline-flex;
@@ -82,27 +44,21 @@ justify-content:center;
 gap:8px;
 min-width:82px;
 padding:10px 14px;
-background:#000;
-color:#fff;
-border:1px solid var(--beige);
-border-radius:8px;
-box-shadow:0 0 0 0 rgba(200,162,122,0);
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
 text-decoration:none;
-transition:
-background .18s ease,
-color .18s ease,
-border-color .18s ease,
-transform .18s var(--ease),
-box-shadow .18s ease
+transition:background .18s,color .18s
 }
 
-.navButton:hover,
-.navButton:focus{
-background:var(--beige);
-color:#000;
-border-color:var(--beige);
-box-shadow:0 5px 20px rgba(200,162,122,.18);
-transform:translateY(-2px);
+.navButton:hover,.navButton:focus{
+background:#000!important;
+color:#fff!important;
+border-color:#fff;
+box-shadow:none!important;
 outline:none
 }
 
@@ -110,16 +66,13 @@ outline:none
 width:17px;
 height:17px;
 fill:none;
-stroke:currentColor;
+stroke:#fff;
 stroke-width:1.8;
 stroke-linecap:round;
 stroke-linejoin:round
 }
 
-main{
-position:relative;
-z-index:1
-}
+main{position:relative;z-index:1}
 
 .games{
 position:relative;
@@ -129,7 +82,8 @@ margin:0 auto;
 padding:34px clamp(16px,5vw,64px) 64px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-gap:20px
+gap:20px;
+background:#000!important
 }
 
 .game{
@@ -137,57 +91,68 @@ position:relative;
 z-index:1;
 min-height:171px;
 padding:10px;
-background:#000;
-color:#fff;
-border:1px solid rgba(200,162,122,.55);
-border-radius:12px;
-box-shadow:0 8px 30px rgba(0,0,0,.35);
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
 will-change:transform;
 transform-origin:center;
 cursor:pointer;
-transition:
-border-color .18s ease,
-box-shadow .18s ease
+transition:background .18s,color .18s
 }
 
-.game:hover,
-.game:focus-within{
-border-color:var(--beige);
-box-shadow:0 12px 35px rgba(200,162,122,.12);
+.game:hover,.game:focus-within{
+z-index:1;
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+box-shadow:none!important;
+filter:none!important;
 outline:none
 }
 
 .gameLink{
 display:block;
 height:100%;
-background:#000;
-color:#fff;
+background:#000!important;
+color:#fff!important;
 text-decoration:none
 }
 
-.gameLink:hover,
-.gameLink:focus
+.gameLink:hover,.gameLink:focus
 
 .game img{
 display:block;
 width:100%;
 height:151px;
 object-fit:cover;
-background:#111;
-border:1px solid rgba(200,162,122,.35);
-border-radius:8px;
-transition:border-color .18s ease
+background:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
+transition:none
 }
 
 .game:hover img{
-border-color:var(--beige)
+background:#fff!important;
+filter:none!important;
+box-shadow:none!important
+}
+
+.game::before,.game::after,.gameLink::before,.gameLink::after{
+display:none!important;
+content:none!important;
+box-shadow:none!important
 }
 
 #gamesPage{
 display:none;
 position:relative;
 z-index:1;
-background:#000
+background:#000!important
 }
 
 #passwordScreen{
@@ -196,20 +161,19 @@ inset:0;
 z-index:2000;
 display:grid;
 place-items:center;
-background:#000;
+background:#000!important;
 color:#fff
 }
 
 .passwordBox{
 width:min(420px,calc(100vw - 32px));
-padding:34px;
-background:#111;
-color:#fff;
-border:2px solid rgba(200,162,122,.65);
-border-radius:15px;
-box-shadow:
-0 0 35px rgba(200,162,122,.08),
-0 20px 70px rgba(0,0,0,.55);
+padding:30px;
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
 text-align:center;
 animation:panelIn .5s var(--ease) both
 }
@@ -222,24 +186,20 @@ font-size:25px
 
 .passwordBox p{
 margin:0 0 18px;
-color:#bbb
+color:#fff
 }
 
 .passwordBox input{
 width:100%;
-padding:12px 14px;
-background:#fff;
-color:#000;
-border:2px solid #fff;
-border-radius:8px;
-outline:none;
-transition:border-color .18s ease,box-shadow .18s ease
+padding:12px;
+background:#fff!important;
+color:#000!important;
+border:1px solid #fff;
+border-radius:0;
+outline:none
 }
 
-.passwordBox input:focus{
-border-color:var(--beige);
-box-shadow:0 0 0 3px rgba(200,162,122,.18)
-}
+.passwordBox input:focus
 
 .passwordBox button{
 display:inline-flex;
@@ -249,35 +209,31 @@ gap:8px;
 width:100%;
 margin-top:14px;
 padding:12px;
-background:var(--beige);
-color:#000;
-border:2px solid var(--beige);
-border-radius:8px;
-box-shadow:0 5px 20px rgba(200,162,122,.12);
-transition:
-background .18s ease,
-color .18s ease,
-transform .18s var(--ease),
-box-shadow .18s ease
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
+transition:background .18s,color .18s
 }
 
-.passwordBox button:hover,
-.passwordBox button:focus{
-background:var(--beige-dark);
-color:#000;
-transform:translateY(-2px);
-box-shadow:0 8px 25px rgba(200,162,122,.2);
+.passwordBox button:hover,.passwordBox button:focus{
+background:#000!important;
+color:#fff!important;
+border-color:#fff;
+box-shadow:none!important;
 outline:none
 }
 
 .passwordBox.errorState{
-border-color:#f00!important;
+border:1px solid #f00!important;
+box-shadow:none!important;
 animation:passwordErrorShake .48s ease-in-out both!important
 }
 
-.passwordBox.errorState h2,
-.passwordBox.errorState p{
-color:#fff
+.passwordBox.errorState h2,.passwordBox.errorState p{
+color:#fff!important
 }
 
 .passwordBox.entering{
@@ -299,30 +255,16 @@ transform:translateY(100%);
 transition:transform .6s var(--ease)
 }
 
-.page-transition.is-active{
-transform:translateY(0)
-}
-
-.page-transition.is-leaving{
-transform:translateY(-100%)
-}
+.page-transition.is-active{transform:translateY(0)}
+.page-transition.is-leaving{transform:translateY(-100%)}
 
 @keyframes panelIn{
-from{
-opacity:0;
-transform:translateY(14px) scale(.98)
-}
-to{
-opacity:1;
-transform:none
-}
+from{opacity:0;transform:translateY(14px)}
+to{opacity:1;transform:none}
 }
 
 @keyframes panelOut{
-to{
-opacity:0;
-transform:translateY(-12px) scale(.98)
-}
+to{opacity:0;transform:translateY(-12px)}
 }
 
 @keyframes passwordErrorShake{
@@ -336,37 +278,15 @@ transform:translateY(-12px) scale(.98)
 }
 
 @media(max-width:700px){
-.siteHeader{
-padding:10px 14px
-}
-
-.navButton{
-min-width:0;
-padding:9px 10px
-}
-
-.games{
-grid-template-columns:1fr;
-padding-top:24px
-}
-
-.game{
-min-height:183px
-}
-
-.game img{
-height:163px
-}
-
-.passwordBox{
-padding:28px
-}
+.siteHeader{padding:10px 14px}
+.navButton{min-width:0;padding:9px 10px}
+.games{grid-template-columns:1fr;padding-top:24px}
+.game{min-height:183px}
+.game img{height:163px}
 }
 
 @media(prefers-reduced-motion:reduce){
-*,
-*:before,
-*:after{
+*,*:before,*:after{
 animation-duration:.001ms!important;
 transition-duration:.001ms!important
 }
@@ -393,10 +313,7 @@ Enter
 
 <div id="website">
 <header class="siteHeader">
-<a class="brand" href="#" id="brandHome" aria-label="SheaGames home">
-<strong>SheaGames</strong>
-</a>
-
+<a class="brand" href="#" id="brandHome" aria-label="SheaGames home"><strong>SheaGames</strong></a>
 <nav class="nav">
 <a class="navButton" href="#" id="homeButton">
 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -404,7 +321,6 @@ Enter
 </svg>
 Home
 </a>
-
 <a class="navButton" href="#" id="gamesButton">
 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
 <rect x="3" y="4" width="7" height="7"/>
@@ -424,10 +340,7 @@ Games
 
 <div id="gamesPage">
 <header class="siteHeader">
-<a class="brand" href="#" id="brandGames" aria-label="SheaGames home">
-<strong>SheaGames</strong>
-</a>
-
+<a class="brand" href="#" id="brandGames" aria-label="SheaGames home"><strong>SheaGames</strong></a>
 <nav class="nav">
 <a class="navButton" href="#" id="homeButton2">
 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
@@ -435,7 +348,6 @@ Games
 </svg>
 Home
 </a>
-
 <a class="navButton" href="#" id="gamesButton2">
 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
 <rect x="3" y="4" width="7" height="7"/>
@@ -519,8 +431,7 @@ const test=new Image();
 const extension=extensions[index++];
 
 test.onload=()=>{
-img.src=number+"."+extension;
-img.style.visibility="visible"
+img.src=number+"."+extension
 };
 
 test.onerror=next;
@@ -567,13 +478,8 @@ if(event.pointerType==="touch")return;
 
 const rect=element.getBoundingClientRect();
 
-targetX=
-((event.clientX-rect.left-rect.width/2)/(rect.width/2))
-*strengthX;
-
-targetY=
-((event.clientY-rect.top-rect.height/2)/(rect.height/2))
-*strengthY
+targetX=((event.clientX-rect.left-rect.width/2)/(rect.width/2))*strengthX;
+targetY=((event.clientY-rect.top-rect.height/2)/(rect.height/2))*strengthY
 });
 
 element.addEventListener("pointerleave",()=>{
@@ -584,18 +490,14 @@ targetY=0
 function animate(){
 vx+=(targetX-x)*.16;
 vy+=(targetY-y)*.16;
-
 vx*=.72;
 vy*=.72;
-
 x+=vx;
 y+=vy;
 
 element.style.transform=
-"translate3d("+
-x.toFixed(2)+"px,"+
-y.toFixed(2)+"px,0) rotate("+
-((vx-vy)*rotation).toFixed(2)+"deg)";
+"translate3d("+x.toFixed(2)+"px,"+
+y.toFixed(2)+"px,0) rotate("+((vx-vy)*rotation).toFixed(2)+"deg)";
 
 requestAnimationFrame(animate)
 }
@@ -612,29 +514,18 @@ let homeGames;
 
 try{
 const popular=getPopularGames();
-
-homeGames=
-popular&&popular.length>=HOME_GAME_COUNT
+homeGames=popular&&popular.length>=HOME_GAME_COUNT
 ?popular.slice(0,HOME_GAME_COUNT)
-:Array.from({length:HOME_GAME_COUNT},(_,i)=>i+1);
-
+:Array.from({length:HOME_GAME_COUNT},(_,i)=>i+1)
 }catch(error){
-homeGames=Array.from(
-{length:HOME_GAME_COUNT},
-(_,i)=>i+1
-)
+homeGames=Array.from({length:HOME_GAME_COUNT},(_,i)=>i+1)
 }
 
 homeGames.forEach(number=>{
 list.appendChild(gameCard(number))
 });
 
-addCursorFollow(
-list.querySelectorAll(".game"),
-12,
-9,
-.45
-)
+addCursorFollow(list.querySelectorAll(".game"),12,9,.45)
 }
 
 function renderAllGames(){
@@ -645,12 +536,7 @@ for(let i=1;i<=GAME_COUNT;i++){
 list.appendChild(gameCard(i))
 }
 
-addCursorFollow(
-list.querySelectorAll(".game"),
-12,
-9,
-.45
-)
+addCursorFollow(list.querySelectorAll(".game"),12,9,.45)
 }
 
 function switchPage(from,to,direction="forward"){
@@ -661,8 +547,7 @@ transitionBusy=true;
 const veil=document.getElementById("pageTransition");
 const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-veil.style.transform=
-direction==="back"
+veil.style.transform=direction==="back"
 ?"translateY(-100%)"
 :"translateY(100%)";
 
@@ -673,6 +558,7 @@ veil.classList.add("is-active");
 
 setTimeout(()=>{
 to.style.display="block";
+
 window.scrollTo({
 top:0,
 behavior:"auto"
@@ -686,7 +572,7 @@ card.style.transform="translateY(14px)";
 setTimeout(()=>{
 card.style.opacity="";
 card.style.transform=""
-},i*20)
+},i*25)
 });
 
 setTimeout(()=>{
@@ -725,13 +611,10 @@ switchPage(website,gamesPage,"forward")
 }
 
 function bind(id,handler){
-document.getElementById(id).addEventListener(
-"click",
-event=>{
+document.getElementById(id).addEventListener("click",event=>{
 event.preventDefault();
 handler()
-}
-)
+})
 }
 
 bind("homeButton",showHome);
@@ -767,9 +650,7 @@ renderHomeGames()
 passwordLocked=true;
 
 box.classList.remove("errorState");
-
 void box.offsetWidth;
-
 box.classList.add("errorState");
 
 input.setAttribute("aria-invalid","true");
@@ -784,58 +665,42 @@ passwordLocked=false
 }
 }
 
-document.getElementById("passwordButton")
-.addEventListener("click",checkPassword);
+document.getElementById("passwordButton").addEventListener("click",checkPassword);
 
-document.getElementById("passwordInput")
-.addEventListener("keydown",event=>{
+document.getElementById("passwordInput").addEventListener("keydown",event=>{
 if(event.key==="Enter")checkPassword()
 });
 
-let previousScroll=window.scrollY;
-let headerOffset=0;
-let ticking=false;
+let lastScrollY=window.scrollY;
+let headerScrollOffset=0;
+let scrollTick=false;
 
-function updateHeader(){
-const currentScroll=window.scrollY;
-const delta=currentScroll-previousScroll;
+function handleHeaderScroll(){
+const currentScrollY=window.scrollY;
+const delta=currentScrollY-lastScrollY;
 const headers=document.querySelectorAll(".siteHeader");
 
-if(currentScroll<=0){
-headerOffset=0
+if(currentScrollY<=0){
+headerScrollOffset=0
 }else{
-headerOffset+=delta;
-headerOffset=Math.max(
-0,
-Math.min(
-68,
-headerOffset
-)
-)
+headerScrollOffset+=delta;
+headerScrollOffset=Math.max(0,Math.min(68,headerScrollOffset))
 }
 
 headers.forEach(header=>{
-header.style.transform=
-"translateY(-"+headerOffset+"px)"
+header.style.transform="translateY(-"+headerScrollOffset+"px)"
 });
 
-previousScroll=currentScroll;
-ticking=false
+lastScrollY=currentScrollY;
+scrollTick=false
 }
 
 window.addEventListener("scroll",()=>{
-if(!ticking){
-requestAnimationFrame(updateHeader);
-ticking=true
+if(!scrollTick){
+requestAnimationFrame(handleHeaderScroll);
+scrollTick=true
 }
 },{passive:true});
-
-window.addEventListener("resize",()=>{
-document.querySelectorAll(".siteHeader").forEach(header=>{
-header.style.transform=
-"translateY(-"+Math.min(headerOffset,header.offsetHeight)+"px)"
-})
-});
 
 </script>
 
