@@ -7,10 +7,10 @@
 <title>SPIRE</title>
 <link rel="icon" type="image/png" href="./SPIRE.png">
 <style>
-:root{--black:#000;--white:#fff;--gray:#aaa;--ease:cubic-bezier(.22,.8,.22,1)}
+:root{--black:#000;--white:#fff;--ease:cubic-bezier(.22,.8,.22,1)}
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif}
-body{overflow-x:hidden}
+html,body{margin:0;min-height:100%;background:#000!important;color:#fff!important;font-family:Arial,Helvetica,sans-serif}
+body{overflow-x:hidden;background-image:none!important}
 a,button,input{font:inherit}
 button{cursor:pointer}
 
@@ -21,11 +21,11 @@ z-index:1000;
 display:flex;
 align-items:center;
 justify-content:space-between;
-gap:24px;
-min-height:70px;
-padding:12px clamp(18px,5vw,64px);
-background:#000;
-border-bottom:1px solid #222;
+gap:18px;
+min-height:68px;
+padding:12px clamp(16px,5vw,64px);
+background:#000!important;
+border-bottom:1px solid #fff;
 color:#fff;
 isolation:isolate;
 will-change:transform
@@ -36,9 +36,8 @@ display:flex;
 align-items:center;
 color:#fff;
 text-decoration:none;
-font-size:18px;
-font-weight:700;
-letter-spacing:-.2px
+font-weight:800;
+letter-spacing:.5px
 }
 
 .brand strong{color:#fff}
@@ -47,8 +46,7 @@ letter-spacing:-.2px
 
 .nav{
 display:flex;
-align-items:center;
-gap:8px
+gap:10px
 }
 
 .navButton{
@@ -56,41 +54,35 @@ display:inline-flex;
 align-items:center;
 justify-content:center;
 gap:8px;
+min-width:82px;
 height:38px;
-min-width:88px;
-padding:0 15px;
-background:#000;
-color:#fff;
-border:1px solid #444;
-border-radius:7px;
-box-shadow:inset 0 0 0 1px transparent;
+padding:0 14px;
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
 text-decoration:none;
 font-size:14px;
 font-weight:600;
-letter-spacing:.1px;
-transition:
-border-color .18s ease,
-background .18s ease,
-color .18s ease,
-transform .18s var(--ease),
-box-shadow .18s ease
+transition:background .18s ease,color .18s ease,transform .18s var(--ease)
 }
 
-.navButton:hover{
-background:#fff;
-color:#000;
+.navButton:hover,.navButton:focus{
+background:#fff!important;
+color:#000!important;
 border-color:#fff;
-transform:translateY(-1px);
-box-shadow:0 4px 14px rgba(255,255,255,.08)
+box-shadow:none!important;
+outline:none;
+transform:translateY(-1px)
 }
 
 .navButton:active{
-transform:translateY(0);
-background:#ddd;
-border-color:#ddd
+background:#ddd!important;
+color:#000!important;
+transform:translateY(0)
 }
-
-.navButton:focus-visible
 
 .icon{
 width:16px;
@@ -114,7 +106,7 @@ padding:34px clamp(16px,5vw,64px) 64px;
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
 gap:20px;
-background:#000
+background:#000!important
 }
 
 .game{
@@ -122,28 +114,33 @@ position:relative;
 z-index:1;
 min-height:171px;
 padding:10px;
-background:#000;
-color:#fff;
-border:1px solid #333;
-border-radius:8px;
-box-shadow:none;
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
 will-change:transform;
 transform-origin:center;
 cursor:pointer;
-transition:border-color .18s ease,box-shadow .18s ease
+transition:background .18s,color .18s
 }
 
 .game:hover,.game:focus-within{
-border-color:#fff;
-box-shadow:0 8px 30px rgba(255,255,255,.04);
+z-index:1;
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+box-shadow:none!important;
+filter:none!important;
 outline:none
 }
 
 .gameLink{
 display:block;
 height:100%;
-background:#000;
-color:#fff;
+background:#000!important;
+color:#fff!important;
 text-decoration:none
 }
 
@@ -154,19 +151,34 @@ display:block;
 width:100%;
 height:151px;
 object-fit:cover;
-background:#fff;
-border:1px solid #333;
-border-radius:5px;
-transition:border-color .18s ease
+background:#fff!important;
+border:1px solid #fff;
+border-radius:0;
+box-shadow:none!important;
+filter:none!important;
+transition:none
 }
 
-.game:hover img{border-color:#fff}
+.game:hover img{
+background:#fff!important;
+filter:none!important;
+box-shadow:none!important
+}
+
+.game::before,
+.game::after,
+.gameLink::before,
+.gameLink::after{
+display:none!important;
+content:none!important;
+box-shadow:none!important
+}
 
 #gamesPage{
 display:none;
 position:relative;
 z-index:1;
-background:#000
+background:#000!important
 }
 
 #passwordScreen{
@@ -175,57 +187,52 @@ inset:0;
 z-index:2000;
 display:grid;
 place-items:center;
-background:#000;
+background:#000!important;
 color:#fff
 }
 
 .passwordBox{
 width:min(420px,calc(100vw - 32px));
-padding:32px;
-background:#000;
-color:#fff;
-border:1px solid #333;
-border-radius:10px;
-box-shadow:0 18px 60px rgba(0,0,0,.65);
+padding:30px;
+background:#000!important;
+color:#fff!important;
+border:1px solid #fff;
+border-radius:0!important;
+box-shadow:none!important;
+filter:none!important;
 text-align:center;
-animation:panelIn .5s var(--ease) both
+animation:panelIn .5s var(--ease) both;
+overflow:hidden
 }
 
 .passwordBox h2{
-margin:0 0 11px;
+margin:0 0 12px;
 color:#fff;
-font-size:24px;
-font-weight:700;
-letter-spacing:-.4px
+font-size:25px;
+font-weight:700
 }
 
 .passwordBox p{
-margin:0 0 20px;
-color:#aaa;
-font-size:14px;
-line-height:1.5
+margin:0 0 18px;
+color:#fff
 }
 
 .passwordBox input{
 display:block;
 width:100%;
-height:44px;
-padding:0 13px;
-background:#fff;
-color:#000;
+height:42px;
+padding:0 12px;
+background:#fff!important;
+color:#000!important;
 border:1px solid #fff;
-border-radius:6px;
+border-radius:0!important;
 outline:none;
-font-size:15px;
-transition:box-shadow .18s ease
-}
-
-.passwordBox input::placeholder{
-color:#777
+box-shadow:none!important
 }
 
 .passwordBox input:focus{
-box-shadow:0 0 0 2px #555
+outline:1px solid #fff;
+box-shadow:none!important
 }
 
 .passwordBox button{
@@ -234,49 +241,43 @@ align-items:center;
 justify-content:center;
 gap:8px;
 width:100%;
-height:44px;
-margin-top:12px;
-padding:0 16px;
-background:#fff;
-color:#000;
+height:42px;
+margin-top:14px;
+padding:0 14px;
+background:#000!important;
+color:#fff!important;
 border:1px solid #fff;
-border-radius:6px;
-box-shadow:none;
-font-size:14px;
-font-weight:700;
-letter-spacing:.1px;
-transition:
-background .18s ease,
-color .18s ease,
-border-color .18s ease,
-transform .18s var(--ease),
-box-shadow .18s ease
+border-radius:0!important;
+box-shadow:none!important;
+filter:none!important;
+font-weight:600;
+transition:background .18s ease,color .18s ease,transform .18s var(--ease)
 }
 
-.passwordBox button:hover{
-background:#ddd;
-color:#000;
-border-color:#ddd;
-transform:translateY(-1px);
-box-shadow:0 5px 16px rgba(255,255,255,.08)
+.passwordBox button:hover,.passwordBox button:focus{
+background:#fff!important;
+color:#000!important;
+border-color:#fff;
+box-shadow:none!important;
+outline:none;
+transform:translateY(-1px)
 }
 
 .passwordBox button:active{
-background:#bbb;
-border-color:#bbb;
+background:#ddd!important;
+color:#000!important;
 transform:translateY(0)
 }
 
-.passwordBox button:focus-visible
-
 .passwordBox.errorState{
-border-color:#f00!important;
+border:1px solid #f00!important;
+box-shadow:none!important;
 animation:passwordErrorShake .48s ease-in-out both!important
 }
 
 .passwordBox.errorState h2,
 .passwordBox.errorState p{
-color:#fff
+color:#fff!important
 }
 
 .passwordBox.entering{
@@ -321,40 +322,11 @@ to{opacity:0;transform:translateY(-12px)}
 }
 
 @media(max-width:700px){
-.siteHeader{
-padding:10px 14px;
-gap:12px
-}
-
-.brand{font-size:16px}
-
-.nav{
-gap:6px
-}
-
-.navButton{
-height:36px;
-min-width:0;
-padding:0 11px;
-font-size:13px
-}
-
-.games{
-grid-template-columns:1fr;
-padding-top:24px
-}
-
-.game{
-min-height:183px
-}
-
-.game img{
-height:163px
-}
-
-.passwordBox{
-padding:28px
-}
+.siteHeader{padding:10px 14px}
+.navButton{min-width:0;padding:0 10px}
+.games{grid-template-columns:1fr;padding-top:24px}
+.game{min-height:183px}
+.game img{height:163px}
 }
 
 @media(prefers-reduced-motion:reduce){
@@ -404,7 +376,6 @@ Games
 </a>
 </nav>
 </header>
-
 <main>
 <section class="games" id="gameList" aria-label="Popular games"></section>
 </main>
@@ -431,18 +402,14 @@ Games
 </a>
 </nav>
 </header>
-
 <main>
 <section class="games" id="allGameList" aria-label="All games"></section>
 </main>
 </div>
 
 <script>
-const GAME_COUNT=100;
-const HOME_GAME_COUNT=8;
-
-let passwordLocked=false;
-let transitionBusy=false;
+const GAME_COUNT=100,HOME_GAME_COUNT=8;
+let passwordLocked=false,transitionBusy=false;
 
 function getTodayKey(){
 const d=new Date();
@@ -481,10 +448,7 @@ localStorage.setItem("sheaGamePopularity",JSON.stringify(data))
 function getPopularGames(){
 const data=getPopularity();
 
-return Array.from(
-{length:GAME_COUNT},
-(_,i)=>i+1
-).sort(
+return Array.from({length:GAME_COUNT},(_,i)=>i+1).sort(
 (a,b)=>(data.visits[b]||0)-(data.visits[a]||0)||a-b
 )
 }
@@ -538,12 +502,7 @@ return card
 
 function addCursorFollow(elements,strengthX,strengthY,rotation){
 elements.forEach(element=>{
-let x=0;
-let y=0;
-let targetX=0;
-let targetY=0;
-let vx=0;
-let vy=0;
+let x=0,y=0,targetX=0,targetY=0,vx=0,vy=0;
 
 element.addEventListener("pointermove",event=>{
 if(event.pointerType==="touch")return;
@@ -724,9 +683,7 @@ renderHomeGames()
 passwordLocked=true;
 
 box.classList.remove("errorState");
-
 void box.offsetWidth;
-
 box.classList.add("errorState");
 
 input.setAttribute("aria-invalid","true");
@@ -760,11 +717,12 @@ if(currentScrollY<=0){
 headerScrollOffset=0
 }else{
 headerScrollOffset+=delta;
-headerScrollOffset=Math.max(0,Math.min(70,headerScrollOffset))
+headerScrollOffset=Math.max(0,Math.min(68,headerScrollOffset))
 }
 
 headers.forEach(header=>{
-header.style.transform="translate3d(0,-"+headerScrollOffset+"px,0)"
+header.style.transform=
+"translate3d(0,-"+headerScrollOffset+"px,0)"
 });
 
 lastScrollY=currentScrollY;
