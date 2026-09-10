@@ -196,3 +196,17 @@ addCursorFollow([document.getElementById("passwordBox")],4,3,.3);
 .game,.game:nth-child(3n+2),.game:nth-child(3n),.game:hover{background:#000!important;color:#fff!important}
 .game:hover{border-color:#fff!important;box-shadow:0 0 0 2px #fff,0 0 18px #fff!important}
 </style>
+<style>
+/* Global monochrome hover lock: black fill and white content everywhere. */
+#website,#gamesPage,#website:hover,#gamesPage:hover,
+.game,.game:hover,.game:focus-within,
+.gameLink,.gameLink:hover,.gameLink:focus,
+.navButton,.navButton:hover,.navButton:focus,
+.brand,.brand:hover,.brand:focus,
+.passwordBox button,.passwordBox button:hover,.passwordBox button:focus,
+.passwordBox .guestButton,.passwordBox .guestButton:hover,.passwordBox .guestButton:focus,
+.game h1,.game h2,.game h3,.game p,.game span,.game a,
+.navButton svg,.navButton:hover svg,.navButton:focus svg{background:#000!important;color:#fff!important;fill:none!important;stroke:#fff!important}
+.game:hover,.game:focus-within,.navButton:hover,.navButton:focus,.passwordBox button:hover,.passwordBox button:focus{border-color:#fff!important;box-shadow:0 0 0 2px #fff,0 0 18px #fff!important}
+.game img,.game:hover img{background:#fff!important;border-color:#fff!important;filter:grayscale(1)!important}
+</style>
