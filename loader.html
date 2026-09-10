@@ -3,25 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Loading World...</title>
+<title>SheaGames — Loading</title>
 <link rel="icon" type="image/png" href="SPIRE.png">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;background:#202124;color:#f5f6f7}body{background-image:radial-gradient(rgba(255,255,255,.045) 1px,transparent 1px);background-size:24px 24px}
-#game{position:fixed;inset:0;width:100%;height:100%;border:0;background:#111213;opacity:0;transition:opacity .55s;z-index:1}#game.show{opacity:1}
-#loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#202124;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px;transition:opacity .65s,transform .65s cubic-bezier(.22,.8,.22,1)}#loader.hide{opacity:0;pointer-events:none;transform:scale(1.015)}.logo{display:none;width:144px;height:144px;object-fit:contain;padding:8px;margin-bottom:26px;border:1px solid rgba(255,255,255,.2);border-radius:24px;background:#34363a;filter:grayscale(1) brightness(1.35);animation:mascotBreath 3.8s ease-in-out infinite}.title{color:#f5f6f7;font-size:clamp(24px,5vw,33px);font-weight:700;letter-spacing:-.5px;margin-bottom:24px}.barbox{width:310px;max-width:76vw;height:16px;margin-bottom:16px;overflow:hidden;border:1px solid rgba(255,255,255,.28);border-radius:99px;background:#383a3e;box-shadow:0 4px 12px rgba(0,0,0,.22)}.bar{width:0;height:100%;background:#f5f6f7;border-right:1px solid #111213;border-radius:99px;transition:width .3s}.percent{color:#c8cbd0;font-size:15px;font-weight:700}.dots{display:flex;gap:7px;margin-top:24px}.dot{width:8px;height:8px;border:1px solid rgba(255,255,255,.4);border-radius:50%;background:#f5f6f7;animation:dot 1.25s infinite}.dot:nth-child(2){animation-delay:-.18s}.dot:nth-child(3){animation-delay:-.36s}
-#error{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;flex-direction:column;text-align:center;color:#f5f6f7;background:#202124;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:24px 24px}#error.show{display:flex}#error p{margin-bottom:20px;padding:16px 18px;color:#202124;background:#f5f6f7;border:1px solid rgba(0,0,0,.45);border-radius:12px;box-shadow:0 7px 16px rgba(0,0,0,.25)}#error a{padding:10px 16px;color:#f5f6f7;background:#303236;border:1px solid rgba(255,255,255,.25);border-radius:10px;text-decoration:none;box-shadow:0 4px 10px rgba(0,0,0,.22)}
-@keyframes mascotBreath{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-6px) rotate(2deg)}}@keyframes dot{0%,80%,100%{transform:scale(.8);opacity:.45}40%{transform:scale(1.15);opacity:1}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
-
-/* Flat near-black loader to match the dark index. */
-body,#loader,#error{background:#111214!important;background-image:none!important}
-#loader{background:#0d0e10!important}.logo{background:#202226;border-color:rgba(255,255,255,.2);filter:grayscale(1) brightness(1.45) drop-shadow(0 7px 13px rgba(0,0,0,.55));animation:loaderFloat 2.8s ease-in-out infinite}.title{color:#f4f5f6}.barbox{background:#202226;border-color:rgba(255,255,255,.2);box-shadow:0 5px 13px rgba(0,0,0,.48)}.bar{background:#f4f5f6}.percent{color:#b7bac0}.dot{background:#f4f5f6}.page-transition{background:#08090a!important}
-@keyframes loaderFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-10px) rotate(2deg)}}
-
-
-/* Matching block-world loader. */
-body,#loader,#error{background:#101311!important;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px)!important;background-size:32px 32px!important}
-#loader{background:#080a09!important}.logo{display:none}.title{font-family:Verdana,Arial,sans-serif;text-transform:uppercase;letter-spacing:2px;color:#e7eee5;text-shadow:3px 3px 0 #000}.barbox{height:21px;border:2px solid #080a09;border-radius:2px;background:#202722;box-shadow:4px 4px 0 #000}.bar{background:#6d9f48;border-right:2px solid #080a09;border-radius:0}.percent{color:#a9b7a6}.dots{gap:9px}.dot{width:10px;height:10px;border:2px solid #080a09;border-radius:1px;background:#93bd65}.dot:nth-child(2){background:#626b67}.dot:nth-child(3){background:#a3483d}#error{background:#080a09!important}#error p{background:#202722;color:#e7eee5;border:2px solid #080a09;border-radius:2px;box-shadow:4px 4px 0 #000}#error a{background:#6d9f48;color:#101510;border:2px solid #080a09;border-radius:2px;box-shadow:3px 4px 0 #000}
-
+*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;height:100%;overflow:hidden;background:#000;color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}body{background-image:none!important}
+#game{position:fixed;inset:0;width:100%;height:100%;border:0;background:#000;opacity:0;transition:opacity .6s;z-index:1}#game.show{opacity:1}
+#loader{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;color:#fff;transition:opacity .65s,transform .65s cubic-bezier(.22,.8,.22,1)}#loader.hide{opacity:0;pointer-events:none;transform:scale(1.01)}
+.logo{display:none}.title{color:#fff;font-size:clamp(23px,5vw,32px);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:25px;text-shadow:none}.barbox{width:310px;max-width:76vw;height:16px;margin-bottom:16px;overflow:hidden;border:1px solid #fff;border-radius:4px;background:#000;box-shadow:0 0 0 1px #fff,0 0 12px #fff}.bar{width:0;height:100%;background:#000;border-right:1px solid #fff;border-radius:0;transition:width .3s;box-shadow:0 0 10px #fff}.percent{color:#fff;font-size:15px;font-weight:700}.dots{display:flex;gap:8px;margin-top:24px}.dot{width:8px;height:8px;border:1px solid #fff;border-radius:0;background:#000;box-shadow:0 0 8px #fff;animation:dot 1.25s infinite}.dot:nth-child(2),.dot:nth-child(3){background:#000}.dot:nth-child(2){animation-delay:-.18s}.dot:nth-child(3){animation-delay:-.36s}
+#error{display:none;position:fixed;inset:0;z-index:10000;align-items:center;justify-content:center;flex-direction:column;text-align:center;color:#fff;background:#000}#error.show{display:flex}#error p{margin-bottom:20px;padding:16px 18px;color:#fff;background:#000;border:1px solid #fff;border-radius:4px;box-shadow:0 0 0 1px #fff,0 0 14px #fff}#error a{padding:10px 16px;color:#fff;background:#000;border:1px solid #fff;border-radius:4px;text-decoration:none;box-shadow:0 0 0 1px #fff,0 0 12px #fff}#error a:hover{background:#000;color:#fff;box-shadow:0 0 0 2px #fff,0 0 18px #fff}
+@keyframes dot{0%,80%,100%{opacity:.35;transform:scale(.8)}40%{opacity:1;transform:scale(1.1)}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 </style>
 </head>
 <body>
@@ -30,7 +20,7 @@ body,#loader,#error{background:#101311!important;background-image:linear-gradien
 
 <div id="loader">
 
-<div class="title">Game Hub</div>
+<div class="title">SheaGames</div>
 <div class="barbox"><div class="bar" id="bar"></div></div>
 <div class="percent" id="percent">0%</div>
 <div class="dots">
