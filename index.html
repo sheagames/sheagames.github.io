@@ -27,18 +27,31 @@ padding:12px clamp(16px,5vw,64px);
 background:#000!important;
 border-bottom:1px solid #fff;
 color:#fff;
-transition:transform .35s cubic-bezier(.22,.8,.22,1)
+isolation:isolate;
+transition:transform .35s var(--ease)
 }
 
 .siteHeader.headerHidden{
-transform:translateY(-100%)
+transform:translateY(-110%)
 }
 
-.brand{display:flex;align-items:center;color:#fff;text-decoration:none;font-weight:800;letter-spacing:.5px}
+.brand{
+display:flex;
+align-items:center;
+color:#fff;
+text-decoration:none;
+font-weight:800;
+letter-spacing:.5px
+}
+
 .brand strong{color:#fff}
+
 .brand:hover,.brand:focus
 
-.nav{display:flex;gap:10px}
+.nav{
+display:flex;
+gap:10px
+}
 
 .navButton{
 display:inline-flex;
@@ -52,11 +65,18 @@ color:#fff!important;
 border:1px solid #fff;
 border-radius:0;
 box-shadow:none!important;
+filter:none!important;
 text-decoration:none;
 transition:background .18s,color .18s,transform .18s var(--ease)
 }
 
-.navButton:hover,.navButton:focus
+.navButton:hover,.navButton:focus{
+background:#000!important;
+color:#fff!important;
+border-color:#fff;
+box-shadow:none!important;
+outline:none
+}
 
 .icon{
 width:17px;
@@ -68,7 +88,10 @@ stroke-linecap:round;
 stroke-linejoin:round
 }
 
-main{position:relative;z-index:1}
+main{
+position:relative;
+z-index:1
+}
 
 .games{
 position:relative;
@@ -92,6 +115,7 @@ color:#fff!important;
 border:1px solid #fff;
 border-radius:0;
 box-shadow:none!important;
+filter:none!important;
 will-change:transform;
 transform-origin:center;
 cursor:pointer;
@@ -104,6 +128,8 @@ z-index:1;
 background:#000!important;
 color:#fff!important;
 border:1px solid #fff;
+box-shadow:none!important;
+filter:none!important;
 outline:none
 }
 
@@ -126,12 +152,20 @@ background:#fff!important;
 border:1px solid #fff;
 border-radius:0;
 box-shadow:none!important;
-filter:none!important
+filter:none!important;
+transition:none
+}
+
+.game:hover img{
+background:#fff!important;
+filter:none!important;
+box-shadow:none!important
 }
 
 .game::before,.game::after,.gameLink::before,.gameLink::after{
 display:none!important;
-content:none!important
+content:none!important;
+box-shadow:none!important
 }
 
 #gamesPage{
@@ -159,6 +193,7 @@ color:#fff!important;
 border:1px solid #fff;
 border-radius:0;
 box-shadow:none!important;
+filter:none!important;
 text-align:center;
 animation:panelIn .5s var(--ease) both
 }
@@ -198,14 +233,28 @@ background:#000!important;
 color:#fff!important;
 border:1px solid #fff;
 border-radius:0;
-transition:background .18s,color .18s
+box-shadow:none!important;
+filter:none!important;
+transition:background .18s,color .18s,transform .18s var(--ease)
 }
 
-.passwordBox button:hover,.passwordBox button:focus
+.passwordBox button:hover,.passwordBox button:focus{
+background:#000!important;
+color:#fff!important;
+border-color:#fff;
+box-shadow:none!important;
+outline:none
+}
 
 .passwordBox.errorState{
 border:1px solid #f00!important;
+box-shadow:none!important;
 animation:passwordErrorShake .48s ease-in-out both!important
+}
+
+.passwordBox.errorState h2,
+.passwordBox.errorState p{
+color:#fff!important
 }
 
 .passwordBox.entering{
@@ -260,17 +309,37 @@ to{opacity:0;transform:translateY(-12px)}
 }
 
 @media(max-width:700px){
-.siteHeader{padding:10px 14px}
-.navButton{min-width:0;padding:9px 10px}
-.games{grid-template-columns:1fr;padding-top:24px}
-.game{min-height:183px}
-.game img{height:163px}
+.siteHeader{
+padding:10px 14px
+}
+
+.navButton{
+min-width:0;
+padding:9px 10px
+}
+
+.games{
+grid-template-columns:1fr;
+padding-top:24px
+}
+
+.game{
+min-height:183px
+}
+
+.game img{
+height:163px
+}
 }
 
 @media(prefers-reduced-motion:reduce){
 *,*:before,*:after{
 animation-duration:.001ms!important;
 transition-duration:.001ms!important
+}
+
+.siteHeader{
+transform:none!important
 }
 } </style>
 
@@ -435,10 +504,14 @@ next()
 function gameCard(number){
 
 const card=document.createElement("div");
+
 card.className="game";
-card.style.animationDelay=Math.min(number%8,7)*35+"ms";
+
+card.style.animationDelay=
+Math.min(number%8,7)*35+"ms";
 
 const link=document.createElement("a");
+
 link.className="gameLink";
 link.href="loader.html?game="+encodeURIComponent(number);
 
@@ -447,6 +520,7 @@ recordVisit(number)
 });
 
 const img=document.createElement("img");
+
 img.alt="Game "+number;
 
 findImage(number,img);
@@ -474,9 +548,11 @@ if(event.pointerType==="touch")return;
 
 const rect=element.getBoundingClientRect();
 
-targetX=((event.clientX-rect.left-rect.width/2)/(rect.width/2))*strengthX;
-targetY=((event.clientY-rect.top-rect.height/2)/(rect.height/2))*strengthY
+targetX=
+((event.clientX-rect.left-rect.width/2)/(rect.width/2))*strengthX;
 
+targetY=
+((event.clientY-rect.top-rect.height/2)/(rect.height/2))*strengthY
 });
 
 element.addEventListener("pointerleave",()=>{
@@ -496,15 +572,16 @@ x+=vx;
 y+=vy;
 
 element.style.transform=
-"translate3d("+x.toFixed(2)+"px,"+
+"translate3d("+
+x.toFixed(2)+"px,"+
 y.toFixed(2)+"px,0) rotate("+
-((vx-vy)*rotation).toFixed(2)+"deg)";
+((vx-vy)*rotation).toFixed(2)+
+"deg)";
 
 requestAnimationFrame(animate)
 }
 
 animate()
-
 })
 }
 
@@ -523,7 +600,10 @@ const popular=getPopularGames();
 homeGames=
 popular&&popular.length>=HOME_GAME_COUNT
 ?popular.slice(0,HOME_GAME_COUNT)
-:Array.from({length:HOME_GAME_COUNT},(_,i)=>i+1)
+:Array.from(
+{length:HOME_GAME_COUNT},
+(_,i)=>i+1
+)
 
 }catch(error){
 
@@ -571,7 +651,9 @@ if(transitionBusy)return;
 transitionBusy=true;
 
 const veil=document.getElementById("pageTransition");
-const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const reduce=
+matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 veil.style.transform=
 direction==="back"
@@ -605,8 +687,10 @@ card.style.opacity="0";
 card.style.transform="translateY(14px)";
 
 setTimeout(()=>{
+
 card.style.opacity="";
 card.style.transform=""
+
 },i*25)
 
 });
@@ -642,9 +726,11 @@ if(transitionBusy||website.style.display==="block")return;
 
 renderHomeGames();
 
-window.scrollTo(0,0);
-
-switchPage(gamesPage,website,"back")
+switchPage(
+gamesPage,
+website,
+"back"
+)
 }
 
 function showGames(){
@@ -653,9 +739,11 @@ if(transitionBusy||gamesPage.style.display==="block")return;
 
 renderAllGames();
 
-window.scrollTo(0,0);
-
-switchPage(website,gamesPage,"forward")
+switchPage(
+website,
+gamesPage,
+"forward"
+)
 }
 
 function bind(id,handler){
@@ -667,7 +755,6 @@ event.preventDefault();
 handler()
 }
 )
-
 }
 
 bind("homeButton",showHome);
@@ -695,11 +782,10 @@ document.getElementById("passwordScreen").classList.add("hidden");
 setTimeout(()=>{
 
 document.getElementById("passwordScreen").style.display="none";
+
 website.style.display="block";
 
 renderHomeGames();
-
-window.scrollTo(0,0)
 
 },550)
 
@@ -715,20 +801,25 @@ void box.offsetWidth;
 
 box.classList.add("errorState");
 
-input.setAttribute("aria-invalid","true");
+input.setAttribute(
+"aria-invalid",
+"true"
+);
 
 setTimeout(()=>{
 
 box.classList.remove("errorState");
+
 input.removeAttribute("aria-invalid");
+
 input.value="";
+
 input.focus();
+
 passwordLocked=false
 
 },900)
-
 }
-
 }
 
 document.getElementById("passwordButton").addEventListener(
@@ -748,8 +839,8 @@ let scrollTick=false;
 
 function handleHeaderScroll(){
 
-const headers=document.querySelectorAll(".siteHeader");
 const currentScrollY=window.scrollY;
+const headers=document.querySelectorAll(".siteHeader");
 
 if(currentScrollY<=10){
 
@@ -757,13 +848,13 @@ headers.forEach(header=>{
 header.classList.remove("headerHidden")
 });
 
-}else if(currentScrollY>lastScrollY+3){
+}else if(currentScrollY>lastScrollY){
 
 headers.forEach(header=>{
 header.classList.add("headerHidden")
 });
 
-}else if(currentScrollY<lastScrollY-3){
+}else if(currentScrollY<lastScrollY){
 
 headers.forEach(header=>{
 header.classList.remove("headerHidden")
@@ -780,6 +871,7 @@ window.addEventListener("scroll",()=>{
 if(!scrollTick){
 
 requestAnimationFrame(handleHeaderScroll);
+
 scrollTick=true
 
 }
