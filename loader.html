@@ -7,7 +7,11 @@
 <title>SPIRE</title>
 <link rel="icon" type="image/png" href="./SPIRE.png">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
+*{
+box-sizing:border-box;
+margin:0;
+padding:0
+}
 
 html,body{
 width:100%;
@@ -31,13 +35,14 @@ border:0;
 background:#000;
 opacity:0;
 visibility:hidden;
-transition:opacity .6s ease;
-z-index:1
+z-index:1;
+transition:opacity .7s ease,visibility 0s linear .7s
 }
 
 #game.ready{
 opacity:1;
-visibility:visible
+visibility:visible;
+transition:opacity .7s ease
 }
 
 #loader{
@@ -52,26 +57,27 @@ background:#000;
 color:#fff;
 opacity:1;
 visibility:visible;
-transition:opacity .6s ease,visibility .6s ease
+transition:opacity .7s ease,visibility 0s linear .7s
 }
 
 #loader.hide{
 opacity:0;
 visibility:hidden;
-pointer-events:none
+pointer-events:none;
+transition:opacity .7s ease,visibility 0s linear .7s
 }
 
 .logo{
+display:block;
 width:164px;
 height:164px;
 object-fit:contain;
-display:block;
-margin-bottom:24px
+margin-bottom:22px
 }
 
 .title{
 color:#fff;
-font-size:clamp(24px,5vw,36px);
+font-size:clamp(25px,5vw,36px);
 font-weight:800;
 letter-spacing:1px;
 margin-bottom:24px
@@ -81,25 +87,34 @@ margin-bottom:24px
 width:310px;
 max-width:76vw;
 height:14px;
-overflow:hidden;
 border:1px solid #fff;
-background:#000
+background:#000;
+overflow:hidden
 }
 
 .bar{
 width:0%;
 height:100%;
 background:#fff;
-transition:width .25s ease
+transform-origin:left center;
+transition:width .18s linear
 }
 
 .percent{
 margin-top:13px;
+min-width:45px;
 color:#fff;
 font-size:14px;
 font-weight:700;
-min-width:42px;
 text-align:center
+}
+
+.status{
+margin-top:9px;
+color:#aaa;
+font-size:12px;
+text-align:center;
+min-height:15px
 }
 
 #error{
@@ -111,8 +126,8 @@ align-items:center;
 justify-content:center;
 flex-direction:column;
 text-align:center;
-color:#fff;
 background:#000;
+color:#fff;
 padding:24px
 }
 
@@ -121,18 +136,23 @@ display:flex
 }
 
 #error p{
+max-width:420px;
 margin-bottom:20px;
 padding:16px 18px;
-color:#fff;
+border:1px solid #fff;
 background:#000;
-border:1px solid #fff
+color:#fff;
+line-height:1.5
 }
 
 #error a{
-padding:10px 16px;
-color:#fff;
-background:#000;
+display:inline-flex;
+align-items:center;
+justify-content:center;
+padding:10px 18px;
 border:1px solid #fff;
+background:#000;
+color:#fff;
 text-decoration:none;
 transition:background .18s ease,color .18s ease
 }
@@ -140,13 +160,14 @@ transition:background .18s ease,color .18s ease
 #error a:hover
 
 @media(max-width:500px){
+
 .logo{
 width:130px;
 height:130px
 }
 
 .title{
-font-size:26px
+font-size:27px
 }
 
 .barbox{
@@ -155,243 +176,391 @@ width:260px
 }
 
 @media(prefers-reduced-motion:reduce){
-*,*:before,*:after{
+
+*,
+*:before,
+*:after{
 animation-duration:.001ms!important;
 transition-duration:.001ms!important
 }
+
 } </style>
 
 </head>
+
 <body>
 
-<iframe id="game" title="Game"></iframe>
+<iframe
+id="game"
+title="SheaGames Game"
+allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write"
+allowfullscreen>
+</iframe>
 
 <div id="loader">
-<img class="logo" src="./logo.png" alt="SheaGames">
+
+<img
+class="logo"
+src="./logo.png"
+alt="SheaGames">
+
 <div class="title">SheaGames</div>
+
 <div class="barbox">
 <div class="bar" id="bar"></div>
 </div>
+
 <div class="percent" id="percent">0%</div>
+
+<div class="status" id="status">Loading game...</div>
+
 </div>
 
 <div id="error">
+
 <p id="errorText">Game could not be loaded.</p>
+
 <a href="./index.html">Go Back</a>
+
 </div>
 
 <script>
 (function(){
 
+"use strict";
+
 const params=new URLSearchParams(window.location.search);
+
 let gameId=params.get("game");
 
 if(!gameId||!/^[0-9]+$/.test(gameId)){
 gameId="1";
 }
 
-const frame=document.getElementById("game");
+const game=document.getElementById("game");
 const loader=document.getElementById("loader");
 const bar=document.getElementById("bar");
 const percent=document.getElementById("percent");
+const status=document.getElementById("status");
 const error=document.getElementById("error");
 const errorText=document.getElementById("errorText");
 
-let progress=0;
-let finished=false;
-let minimumLoadTime=15000;
-let maximumLoadTime=25000;
-let startTime=Date.now();
-let progressTimer=null;
-let finishTimer=null;
-
 const gameURL="./"+gameId+".html";
 
+let documentLoaded=false;
+let gameReady=false;
+let finished=false;
+let progress=0;
+
+const startTime=Date.now();
+
+const MIN_TIME=15000;
+const MAX_TIME=25000;
+
+const targetDuration=
+MIN_TIME+
+Math.random()*(MAX_TIME-MIN_TIME);
+
 function setProgress(value){
+
 progress=Math.max(0,Math.min(100,value));
+
 bar.style.width=progress+"%";
 percent.textContent=Math.floor(progress)+"%";
+
+}
+
+function setStatus(text){
+
+status.textContent=text;
+
 }
 
 function showError(message){
+
 if(finished)return;
 
 finished=true;
-
-if(progressTimer){
-clearInterval(progressTimer);
-}
-
-if(finishTimer){
-clearTimeout(finishTimer);
-}
 
 errorText.textContent=message;
+
 loader.style.display="none";
-frame.style.display="none";
+
+game.style.display="none";
+
 error.classList.add("show");
+
 }
 
-function finishLoading(){
-if(finished)return;
+function calculateProgress(){
 
 const elapsed=Date.now()-startTime;
-const remaining=Math.max(0,minimumLoadTime-elapsed);
 
-finishTimer=setTimeout(function(){
+const timeRatio=Math.min(1,elapsed/targetDuration);
 
-if(finished)return;
+let curve;
 
-finished=true;
+if(timeRatio<.12){
 
-if(progressTimer){
-clearInterval(progressTimer);
-}
+curve=timeRatio*1.8;
 
-setProgress(100);
+}else if(timeRatio<.35){
 
-setTimeout(function(){
+curve=.216+
+(timeRatio-.12)*1.55;
 
-frame.classList.add("ready");
+}else if(timeRatio<.65){
 
-setTimeout(function(){
-loader.classList.add("hide");
+curve=.5725+
+(timeRatio-.35)*.92;
 
-setTimeout(function(){
-loader.style.display="none";
-},650);
+}else if(timeRatio<.88){
 
-},200);
+curve=.8485+
+(timeRatio-.65)*.48;
 
-},350);
-
-},remaining);
-}
-
-function startFakeProgress(){
-
-progressTimer=setInterval(function(){
-
-if(finished)return;
-
-const elapsed=Date.now()-startTime;
-const minimumProgressTime=minimumLoadTime;
-
-if(elapsed<minimumProgressTime){
-
-const timeRatio=elapsed/minimumProgressTime;
-
-let target;
-
-if(timeRatio<.15){
-target=timeRatio*180;
-}else if(timeRatio<.55){
-target=27+(timeRatio-.15)*105;
-}else if(timeRatio<.85){
-target=69+(timeRatio-.55)*63;
 }else{
-target=88+(timeRatio-.85)*40;
+
+curve=.9589+
+(timeRatio-.88)*.30;
+
 }
 
-target=Math.min(94,target);
+curve=Math.min(.99,curve);
 
-const amount=(target-progress)*(.035+Math.random()*.045);
+const randomMovement=(Math.random()-.45)*.7;
 
-if(amount>0){
-progress+=Math.max(.15,amount);
-}
+const target=curve*100+randomMovement;
 
-if(progress>94){
-progress=94;
+if(target>progress){
+
+const difference=target-progress;
+
+progress+=Math.max(.08,difference*.075);
+
+if(progress>99){
+progress=99;
 }
 
 setProgress(progress);
 
-}else{
-
-if(progress<96){
-progress+=Math.random()*.35;
-setProgress(Math.min(96,progress));
 }
 
 }
 
-},180);
-}
+const progressTimer=setInterval(function(){
 
-function verifyGameExists(){
+if(finished){
 
-const request=new XMLHttpRequest();
+clearInterval(progressTimer);
 
-request.open("GET",gameURL,true);
-
-request.onreadystatechange=function(){
-
-if(request.readyState!==4)return;
-
-if(request.status>=200&&request.status<400){
-
-frame.src=gameURL;
 return;
-
 }
 
-if(request.status===0){
+calculateProgress();
 
-frame.src=gameURL;
-return;
+},120);
 
-}
-
-showError(
-"Game "+gameId+".html could not be found."
-);
-
-};
-
-request.onerror=function(){
-frame.src=gameURL;
-};
-
-request.send();
-}
-
-frame.onload=function(){
+function finish(){
 
 if(finished)return;
 
-finishLoading();
-};
+const elapsed=Date.now()-startTime;
 
-frame.onerror=function(){
+const remaining=Math.max(0,targetDuration-elapsed);
 
-showError(
-"Game "+gameId+".html could not be loaded."
-);
-
-};
-
-startFakeProgress();
-verifyGameExists();
+setStatus("Starting game...");
 
 setTimeout(function(){
 
-if(!finished&&!frame.src){
+if(finished)return;
+
+setProgress(100);
+
+setStatus("Ready");
+
+setTimeout(function(){
+
+if(finished)return;
+
+game.classList.add("ready");
+
+setTimeout(function(){
+
+loader.classList.add("hide");
+
+setTimeout(function(){
+
+loader.style.display="none";
+
+},750);
+
+},250);
+
+},350);
+
+},remaining);
+
+}
+
+function checkGameDocument(){
+
+if(finished)return;
+
+try{
+
+const frameDocument=
+game.contentDocument||
+(game.contentWindow&&game.contentWindow.document);
+
+if(!frameDocument){
+
+return;
+}
+
+const body=frameDocument.body;
+
+if(!body){
+
+return;
+}
+
+documentLoaded=true;
+
+const ruffle=
+frameDocument.querySelector("ruffle-player")||
+frameDocument.querySelector("ruffle-player, #flash-container");
+
+if(ruffle){
+
+gameReady=true;
+
+setStatus("Starting game...");
+
+}else{
+
+setStatus("Preparing game...");
+}
+
+}catch(e){
+
+documentLoaded=true;
+
+setStatus("Starting game...");
+
+}
+
+}
+
+game.addEventListener("load",function(){
+
+documentLoaded=true;
+
+setStatus("Preparing game...");
+
+checkGameDocument();
+
+setTimeout(function(){
+
+if(!finished){
+
+gameReady=true;
+
+setStatus("Starting game...");
+
+}
+
+},1200);
+
+});
+
+game.addEventListener("error",function(){
+
 showError(
 "Game "+gameId+".html could not be loaded."
 );
+
+});
+
+game.src=gameURL;
+
+const monitor=setInterval(function(){
+
+if(finished){
+
+clearInterval(monitor);
+
+return;
 }
 
-},10000);
+checkGameDocument();
 
-window.addEventListener("beforeunload",function(){
-if(progressTimer){
-clearInterval(progressTimer);
+if(documentLoaded){
+
+if(gameReady){
+
+const elapsed=Date.now()-startTime;
+
+if(elapsed>=targetDuration){
+
+clearInterval(monitor);
+
+finish();
+
 }
 
-if(finishTimer){
-clearTimeout(finishTimer);
+}else{
+
+const elapsed=Date.now()-startTime;
+
+if(elapsed>=targetDuration){
+
+gameReady=true;
+
+clearInterval(monitor);
+
+finish();
+
 }
+
+}
+
+}
+
+},250);
+
+setTimeout(function(){
+
+if(!finished&&!documentLoaded){
+
+showError(
+"Game "+gameId+".html could not be found or loaded."
+);
+
+}
+
+},12000);
+
+window.addEventListener("message",function(event){
+
+if(finished)return;
+
+if(!event.data)return;
+
+if(typeof event.data!=="object")return;
+
+if(
+event.data.type==="game-loaded"||
+event.data.type==="game-ready"||
+event.data.type==="ruffle-ready"
+){
+
+gameReady=true;
+
+setStatus("Starting game...");
+
+}
+
 });
 
 })();
