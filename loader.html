@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SPIRE</title>
-<link rel="icon" type="image/png" href="SPIRE.png">
+<link rel="icon" type="image/png" href="./SPIRE.png">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 
@@ -18,7 +18,9 @@ color:#fff;
 font-family:Arial,Helvetica,sans-serif
 }
 
-body{background-image:none!important}
+body{
+background:#000!important
+}
 
 #game{
 position:fixed;
@@ -28,11 +30,15 @@ height:100%;
 border:0;
 background:#000;
 opacity:0;
+visibility:hidden;
 transition:opacity .6s ease;
 z-index:1
 }
 
-#game.show{opacity:1}
+#game.ready{
+opacity:1;
+visibility:visible
+}
 
 #loader{
 position:fixed;
@@ -44,21 +50,31 @@ align-items:center;
 justify-content:center;
 background:#000;
 color:#fff;
-transition:opacity .6s ease,transform .6s ease
+opacity:1;
+visibility:visible;
+transition:opacity .6s ease,visibility .6s ease
 }
 
 #loader.hide{
 opacity:0;
-pointer-events:none;
-transform:translateY(-8px)
+visibility:hidden;
+pointer-events:none
+}
+
+.logo{
+width:164px;
+height:164px;
+object-fit:contain;
+display:block;
+margin-bottom:24px
 }
 
 .title{
 color:#fff;
-font-size:clamp(26px,5vw,36px);
+font-size:clamp(24px,5vw,36px);
 font-weight:800;
 letter-spacing:1px;
-margin-bottom:25px
+margin-bottom:24px
 }
 
 .barbox{
@@ -71,7 +87,7 @@ background:#000
 }
 
 .bar{
-width:0;
+width:0%;
 height:100%;
 background:#fff;
 transition:width .25s ease
@@ -81,7 +97,9 @@ transition:width .25s ease
 margin-top:13px;
 color:#fff;
 font-size:14px;
-font-weight:700
+font-weight:700;
+min-width:42px;
+text-align:center
 }
 
 #error{
@@ -94,10 +112,13 @@ justify-content:center;
 flex-direction:column;
 text-align:center;
 color:#fff;
-background:#000
+background:#000;
+padding:24px
 }
 
-#error.show{display:flex}
+#error.show{
+display:flex
+}
 
 #error p{
 margin-bottom:20px;
@@ -112,10 +133,26 @@ padding:10px 16px;
 color:#fff;
 background:#000;
 border:1px solid #fff;
-text-decoration:none
+text-decoration:none;
+transition:background .18s ease,color .18s ease
 }
 
 #error a:hover
+
+@media(max-width:500px){
+.logo{
+width:130px;
+height:130px
+}
+
+.title{
+font-size:26px
+}
+
+.barbox{
+width:260px
+}
+}
 
 @media(prefers-reduced-motion:reduce){
 *,*:before,*:after{
@@ -127,9 +164,10 @@ transition-duration:.001ms!important
 </head>
 <body>
 
-<iframe id="game"></iframe>
+<iframe id="game" title="Game"></iframe>
 
 <div id="loader">
+<img class="logo" src="./logo.png" alt="SheaGames">
 <div class="title">SheaGames</div>
 <div class="barbox">
 <div class="bar" id="bar"></div>
@@ -139,14 +177,18 @@ transition-duration:.001ms!important
 
 <div id="error">
 <p id="errorText">Game could not be loaded.</p>
-<a href="index.html">Go Back</a>
+<a href="./index.html">Go Back</a>
 </div>
 
 <script>
-const params=new URLSearchParams(location.search);
-let id=params.get("game")||"1";
+(function(){
 
-if(!/^[0-9]+$/.test(id))id="1";
+const params=new URLSearchParams(window.location.search);
+let gameId=params.get("game");
+
+if(!gameId||!/^[0-9]+$/.test(gameId)){
+gameId="1";
+}
 
 const frame=document.getElementById("game");
 const loader=document.getElementById("loader");
@@ -156,53 +198,203 @@ const error=document.getElementById("error");
 const errorText=document.getElementById("errorText");
 
 let progress=0;
-let loaded=false;
+let finished=false;
+let minimumLoadTime=15000;
+let maximumLoadTime=25000;
+let startTime=Date.now();
+let progressTimer=null;
+let finishTimer=null;
 
-const gameURL=new URL(id+".html",location.href).href;
+const gameURL="./"+gameId+".html";
 
-const timer=setInterval(function(){
-if(progress<90){
-progress+=Math.random()*7+1;
-
-if(progress>90)progress=90;
-
+function setProgress(value){
+progress=Math.max(0,Math.min(100,value));
 bar.style.width=progress+"%";
 percent.textContent=Math.floor(progress)+"%";
 }
-},250);
 
-frame.src=gameURL;
+function showError(message){
+if(finished)return;
 
-frame.onload=function(){
-if(loaded)return;
+finished=true;
 
-loaded=true;
-clearInterval(timer);
+if(progressTimer){
+clearInterval(progressTimer);
+}
 
-bar.style.width="100%";
-percent.textContent="100%";
+if(finishTimer){
+clearTimeout(finishTimer);
+}
+
+errorText.textContent=message;
+loader.style.display="none";
+frame.style.display="none";
+error.classList.add("show");
+}
+
+function finishLoading(){
+if(finished)return;
+
+const elapsed=Date.now()-startTime;
+const remaining=Math.max(0,minimumLoadTime-elapsed);
+
+finishTimer=setTimeout(function(){
+
+if(finished)return;
+
+finished=true;
+
+if(progressTimer){
+clearInterval(progressTimer);
+}
+
+setProgress(100);
 
 setTimeout(function(){
-frame.classList.add("show");
+
+frame.classList.add("ready");
 
 setTimeout(function(){
 loader.classList.add("hide");
 
 setTimeout(function(){
 loader.style.display="none";
-},700);
+},650);
 
-},150);
+},200);
 
 },350);
+
+},remaining);
+}
+
+function startFakeProgress(){
+
+progressTimer=setInterval(function(){
+
+if(finished)return;
+
+const elapsed=Date.now()-startTime;
+const minimumProgressTime=minimumLoadTime;
+
+if(elapsed<minimumProgressTime){
+
+const timeRatio=elapsed/minimumProgressTime;
+
+let target;
+
+if(timeRatio<.15){
+target=timeRatio*180;
+}else if(timeRatio<.55){
+target=27+(timeRatio-.15)*105;
+}else if(timeRatio<.85){
+target=69+(timeRatio-.55)*63;
+}else{
+target=88+(timeRatio-.85)*40;
+}
+
+target=Math.min(94,target);
+
+const amount=(target-progress)*(.035+Math.random()*.045);
+
+if(amount>0){
+progress+=Math.max(.15,amount);
+}
+
+if(progress>94){
+progress=94;
+}
+
+setProgress(progress);
+
+}else{
+
+if(progress<96){
+progress+=Math.random()*.35;
+setProgress(Math.min(96,progress));
+}
+
+}
+
+},180);
+}
+
+function verifyGameExists(){
+
+const request=new XMLHttpRequest();
+
+request.open("GET",gameURL,true);
+
+request.onreadystatechange=function(){
+
+if(request.readyState!==4)return;
+
+if(request.status>=200&&request.status<400){
+
+frame.src=gameURL;
+return;
+
+}
+
+if(request.status===0){
+
+frame.src=gameURL;
+return;
+
+}
+
+showError(
+"Game "+gameId+".html could not be found."
+);
+
+};
+
+request.onerror=function(){
+frame.src=gameURL;
+};
+
+request.send();
+}
+
+frame.onload=function(){
+
+if(finished)return;
+
+finishLoading();
 };
 
 frame.onerror=function(){
-clearInterval(timer);
-errorText.textContent="Game "+id+".html could not be loaded.";
-error.classList.add("show");
-loader.style.display="none";
+
+showError(
+"Game "+gameId+".html could not be loaded."
+);
+
 };
+
+startFakeProgress();
+verifyGameExists();
+
+setTimeout(function(){
+
+if(!finished&&!frame.src){
+showError(
+"Game "+gameId+".html could not be loaded."
+);
+}
+
+},10000);
+
+window.addEventListener("beforeunload",function(){
+if(progressTimer){
+clearInterval(progressTimer);
+}
+
+if(finishTimer){
+clearTimeout(finishTimer);
+}
+});
+
+})();
 </script>
 
 </body>
