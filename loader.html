@@ -1,567 +1,434 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>SPIRE</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SheaGames</title>
 <link rel="icon" type="image/png" href="./SPIRE.png">
+
 <style>
-*{
-box-sizing:border-box;
-margin:0;
-padding:0
+* {
+    box-sizing: border-box;
 }
 
-html,body{
-width:100%;
-height:100%;
-overflow:hidden;
-background:#000;
-color:#fff;
-font-family:Arial,Helvetica,sans-serif
+html,
+body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
-background:#000!important
+#gameFrame {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+    display: block;
+    z-index: 1;
 }
 
-#game{
-position:fixed;
-inset:0;
-width:100%;
-height:100%;
-border:0;
-background:#000;
-opacity:0;
-visibility:hidden;
-z-index:1;
-transition:opacity .7s ease,visibility 0s linear .7s
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
 }
 
-#game.ready{
-opacity:1;
-visibility:visible;
-transition:opacity .7s ease
+#loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }
 
-#loader{
-position:fixed;
-inset:0;
-z-index:9999;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-background:#000;
-color:#fff;
-opacity:1;
-visibility:visible;
-transition:opacity .7s ease,visibility 0s linear .7s
+.loaderContent {
+    width: min(90vw, 520px);
+    text-align: center;
 }
 
-#loader.hide{
-opacity:0;
-visibility:hidden;
-pointer-events:none;
-transition:opacity .7s ease,visibility 0s linear .7s
+.logo {
+    width: 164px;
+    height: 164px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 30px;
 }
 
-.logo{
-display:block;
-width:164px;
-height:164px;
-object-fit:contain;
-margin-bottom:22px
+.title {
+    font-size: 32px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    margin-bottom: 10px;
 }
 
-.title{
-color:#fff;
-font-size:clamp(25px,5vw,36px);
-font-weight:800;
-letter-spacing:1px;
-margin-bottom:24px
+.subtitle {
+    font-size: 14px;
+    letter-spacing: 2px;
+    opacity: 0.65;
+    margin-bottom: 32px;
 }
 
-.barbox{
-width:310px;
-max-width:76vw;
-height:14px;
-border:1px solid #fff;
-background:#000;
-overflow:hidden
+.progressOuter {
+    width: 100%;
+    height: 10px;
+    border: 2px solid #fff;
+    background: #000;
+    overflow: hidden;
 }
 
-.bar{
-width:0%;
-height:100%;
-background:#fff;
-transform-origin:left center;
-transition:width .18s linear
+.progressInner {
+    width: 0%;
+    height: 100%;
+    background: #fff;
+    transform-origin: left center;
 }
 
-.percent{
-margin-top:13px;
-min-width:45px;
-color:#fff;
-font-size:14px;
-font-weight:700;
-text-align:center
+.percent {
+    margin-top: 14px;
+    font-size: 13px;
+    letter-spacing: 2px;
 }
 
-.status{
-margin-top:9px;
-color:#aaa;
-font-size:12px;
-text-align:center;
-min-height:15px
+.dots {
+    margin-top: 8px;
+    height: 20px;
+    font-size: 14px;
+    letter-spacing: 3px;
 }
 
-#error{
-display:none;
-position:fixed;
-inset:0;
-z-index:10000;
-align-items:center;
-justify-content:center;
-flex-direction:column;
-text-align:center;
-background:#000;
-color:#fff;
-padding:24px
+#errorScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: #000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px;
 }
 
-#error.show{
-display:flex
+#errorScreen.show {
+    display: flex;
 }
 
-#error p{
-max-width:420px;
-margin-bottom:20px;
-padding:16px 18px;
-border:1px solid #fff;
-background:#000;
-color:#fff;
-line-height:1.5
+.errorBox {
+    width: min(90vw, 600px);
+    border: 2px solid #fff;
+    padding: 35px;
 }
 
-#error a{
-display:inline-flex;
-align-items:center;
-justify-content:center;
-padding:10px 18px;
-border:1px solid #fff;
-background:#000;
-color:#fff;
-text-decoration:none;
-transition:background .18s ease,color .18s ease
+.errorTitle {
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 15px;
 }
 
-#error a:hover
-
-@media(max-width:500px){
-
-.logo{
-width:130px;
-height:130px
+.errorText {
+    font-size: 14px;
+    line-height: 1.6;
+    opacity: 0.7;
 }
 
-.title{
-font-size:27px
+.retry {
+    margin-top: 25px;
+    padding: 12px 24px;
+    background: #fff;
+    color: #000;
+    border: 0;
+    font-weight: 700;
+    cursor: pointer;
 }
 
-.barbox{
-width:260px
-}
-}
-
-@media(prefers-reduced-motion:reduce){
-
-*,
-*:before,
-*:after{
-animation-duration:.001ms!important;
-transition-duration:.001ms!important
+.retry:hover {
+    background: #ddd;
 }
 
-} </style>
+#gameFrameWrap {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    background: #000;
+    overflow: hidden;
+}
+
+#gameFrame {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+#gameFrame.visible {
+    opacity: 1;
+}
+</style>
 
 </head>
 
 <body>
 
-<iframe
-id="game"
-title="SheaGames Game"
-allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write"
-allowfullscreen>
-</iframe>
+<div id="gameFrameWrap">
+    <iframe
+        id="gameFrame"
+        title="SheaGames Game"
+        allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write"
+        allowfullscreen
+        scrolling="no"
+        frameborder="0">
+    </iframe>
+</div>
 
 <div id="loader">
+    <div class="loaderContent">
+        <img class="logo" src="./logo.png" alt="SheaGames">
 
-<img
-class="logo"
-src="./logo.png"
-alt="SheaGames">
+```
+    <div class="title">SHEAGAMES</div>
+    <div class="subtitle">LOADING GAME</div>
 
-<div class="title">SheaGames</div>
+    <div class="progressOuter">
+        <div id="progress" class="progressInner"></div>
+    </div>
 
-<div class="barbox">
-<div class="bar" id="bar"></div>
+    <div id="percent" class="percent">0%</div>
+    <div id="dots" class="dots">.</div>
+</div>
+```
+
 </div>
 
-<div class="percent" id="percent">0%</div>
-
-<div class="status" id="status">Loading game...</div>
-
-</div>
-
-<div id="error">
-
-<p id="errorText">Game could not be loaded.</p>
-
-<a href="./index.html">Go Back</a>
-
+<div id="errorScreen">
+    <div class="errorBox">
+        <div class="errorTitle">GAME FAILED TO LOAD</div>
+        <div class="errorText">
+            The game could not be started.<br>
+            Check that the game file exists and try again.
+        </div>
+        <button class="retry" onclick="location.reload()">RETRY</button>
+    </div>
 </div>
 
 <script>
-(function(){
-
-"use strict";
-
-const params=new URLSearchParams(window.location.search);
-
-let gameId=params.get("game");
-
-if(!gameId||!/^[0-9]+$/.test(gameId)){
-gameId="1";
-}
-
-const game=document.getElementById("game");
-const loader=document.getElementById("loader");
-const bar=document.getElementById("bar");
-const percent=document.getElementById("percent");
-const status=document.getElementById("status");
-const error=document.getElementById("error");
-const errorText=document.getElementById("errorText");
-
-const gameURL="./"+gameId+".html";
-
-let documentLoaded=false;
-let gameReady=false;
-let finished=false;
-let progress=0;
-
-const startTime=Date.now();
-
-const MIN_TIME=15000;
-const MAX_TIME=25000;
-
-const targetDuration=
-MIN_TIME+
-Math.random()*(MAX_TIME-MIN_TIME);
-
-function setProgress(value){
-
-progress=Math.max(0,Math.min(100,value));
-
-bar.style.width=progress+"%";
-percent.textContent=Math.floor(progress)+"%";
-
-}
-
-function setStatus(text){
-
-status.textContent=text;
-
-}
-
-function showError(message){
-
-if(finished)return;
-
-finished=true;
-
-errorText.textContent=message;
-
-loader.style.display="none";
-
-game.style.display="none";
-
-error.classList.add("show");
-
-}
-
-function calculateProgress(){
-
-const elapsed=Date.now()-startTime;
-
-const timeRatio=Math.min(1,elapsed/targetDuration);
-
-let curve;
-
-if(timeRatio<.12){
-
-curve=timeRatio*1.8;
-
-}else if(timeRatio<.35){
-
-curve=.216+
-(timeRatio-.12)*1.55;
-
-}else if(timeRatio<.65){
-
-curve=.5725+
-(timeRatio-.35)*.92;
-
-}else if(timeRatio<.88){
-
-curve=.8485+
-(timeRatio-.65)*.48;
-
-}else{
-
-curve=.9589+
-(timeRatio-.88)*.30;
-
-}
-
-curve=Math.min(.99,curve);
-
-const randomMovement=(Math.random()-.45)*.7;
-
-const target=curve*100+randomMovement;
-
-if(target>progress){
-
-const difference=target-progress;
-
-progress+=Math.max(.08,difference*.075);
-
-if(progress>99){
-progress=99;
-}
-
-setProgress(progress);
-
-}
-
-}
-
-const progressTimer=setInterval(function(){
-
-if(finished){
-
-clearInterval(progressTimer);
-
-return;
-}
-
-calculateProgress();
-
-},120);
-
-function finish(){
-
-if(finished)return;
-
-const elapsed=Date.now()-startTime;
-
-const remaining=Math.max(0,targetDuration-elapsed);
-
-setStatus("Starting game...");
-
-setTimeout(function(){
-
-if(finished)return;
-
-setProgress(100);
-
-setStatus("Ready");
-
-setTimeout(function(){
-
-if(finished)return;
-
-game.classList.add("ready");
-
-setTimeout(function(){
-
-loader.classList.add("hide");
-
-setTimeout(function(){
-
-loader.style.display="none";
-
-},750);
-
-},250);
-
-},350);
-
-},remaining);
-
-}
-
-function checkGameDocument(){
-
-if(finished)return;
-
-try{
-
-const frameDocument=
-game.contentDocument||
-(game.contentWindow&&game.contentWindow.document);
-
-if(!frameDocument){
-
-return;
-}
-
-const body=frameDocument.body;
-
-if(!body){
-
-return;
-}
-
-documentLoaded=true;
-
-const ruffle=
-frameDocument.querySelector("ruffle-player")||
-frameDocument.querySelector("ruffle-player, #flash-container");
-
-if(ruffle){
-
-gameReady=true;
-
-setStatus("Starting game...");
-
-}else{
-
-setStatus("Preparing game...");
-}
-
-}catch(e){
-
-documentLoaded=true;
-
-setStatus("Starting game...");
-
-}
-
-}
-
-game.addEventListener("load",function(){
-
-documentLoaded=true;
-
-setStatus("Preparing game...");
-
-checkGameDocument();
-
-setTimeout(function(){
-
-if(!finished){
-
-gameReady=true;
-
-setStatus("Starting game...");
-
-}
-
-},1200);
-
-});
-
-game.addEventListener("error",function(){
-
-showError(
-"Game "+gameId+".html could not be loaded."
-);
-
-});
-
-game.src=gameURL;
-
-const monitor=setInterval(function(){
-
-if(finished){
-
-clearInterval(monitor);
-
-return;
-}
-
-checkGameDocument();
-
-if(documentLoaded){
-
-if(gameReady){
-
-const elapsed=Date.now()-startTime;
-
-if(elapsed>=targetDuration){
-
-clearInterval(monitor);
-
-finish();
-
-}
-
-}else{
-
-const elapsed=Date.now()-startTime;
-
-if(elapsed>=targetDuration){
-
-gameReady=true;
-
-clearInterval(monitor);
-
-finish();
-
-}
-
-}
-
-}
-
-},250);
-
-setTimeout(function(){
-
-if(!finished&&!documentLoaded){
-
-showError(
-"Game "+gameId+".html could not be found or loaded."
-);
-
-}
-
-},12000);
-
-window.addEventListener("message",function(event){
-
-if(finished)return;
-
-if(!event.data)return;
-
-if(typeof event.data!=="object")return;
-
-if(
-event.data.type==="game-loaded"||
-event.data.type==="game-ready"||
-event.data.type==="ruffle-ready"
-){
-
-gameReady=true;
-
-setStatus("Starting game...");
-
-}
-
-});
+(function () {
+
+    const params = new URLSearchParams(window.location.search);
+    let gameId = params.get("game");
+
+    if (!/^\d+$/.test(gameId || "")) {
+        gameId = "1";
+    }
+
+    gameId = String(parseInt(gameId, 10));
+
+    const iframe = document.getElementById("gameFrame");
+    const loader = document.getElementById("loader");
+    const progress = document.getElementById("progress");
+    const percent = document.getElementById("percent");
+    const dots = document.getElementById("dots");
+    const errorScreen = document.getElementById("errorScreen");
+
+    const MIN_TIME = 15000;
+    const MAX_TIME = 25000;
+
+    const targetTime =
+        MIN_TIME + Math.random() * (MAX_TIME - MIN_TIME);
+
+    const startTime = performance.now();
+
+    let iframeLoaded = false;
+    let gameReady = false;
+    let finished = false;
+
+    iframe.src = "./" + gameId + ".html";
+
+    iframe.addEventListener("load", function () {
+        iframeLoaded = true;
+
+        try {
+            const doc = iframe.contentDocument;
+
+            if (doc) {
+                const observer = new MutationObserver(function () {
+                    detectGame();
+                });
+
+                if (doc.documentElement) {
+                    observer.observe(doc.documentElement, {
+                        childList: true,
+                        subtree: true
+                    });
+                }
+
+                detectGame();
+            }
+        } catch (e) {
+            gameReady = true;
+        }
+    });
+
+    iframe.addEventListener("error", function () {
+        showError();
+    });
+
+    function detectGame() {
+        try {
+            const doc = iframe.contentDocument;
+
+            if (!doc) {
+                return;
+            }
+
+            const ruffle =
+                doc.querySelector("ruffle-player") ||
+                doc.querySelector("ruffle-embed") ||
+                doc.querySelector("canvas");
+
+            if (ruffle) {
+                gameReady = true;
+                return;
+            }
+
+            const bodyText =
+                (doc.body ? doc.body.innerText : "").toLowerCase();
+
+            if (
+                bodyText.includes("game could not be loaded") ||
+                bodyText.includes("404 not found") ||
+                bodyText.includes("page not found")
+            ) {
+                showError();
+            }
+
+        } catch (e) {
+            gameReady = true;
+        }
+    }
+
+    window.addEventListener("message", function (event) {
+
+        if (!event.data) {
+            return;
+        }
+
+        if (typeof event.data === "string") {
+            if (
+                event.data === "game-loaded" ||
+                event.data === "game-ready" ||
+                event.data === "ruffle-ready"
+            ) {
+                gameReady = true;
+            }
+        }
+
+        if (typeof event.data === "object") {
+            if (
+                event.data.type === "game-loaded" ||
+                event.data.type === "game-ready" ||
+                event.data.type === "ruffle-ready"
+            ) {
+                gameReady = true;
+            }
+        }
+    });
+
+    function updateProgress() {
+
+        if (finished) {
+            return;
+        }
+
+        const elapsed = performance.now() - startTime;
+        const ratio = Math.min(elapsed / targetTime, 1);
+
+        let visualProgress;
+
+        if (ratio < 0.35) {
+            visualProgress = ratio * 0.9;
+        } else if (ratio < 0.7) {
+            const t = (ratio - 0.35) / 0.35;
+            visualProgress = 31.5 + t * 28;
+        } else if (ratio < 0.92) {
+            const t = (ratio - 0.7) / 0.22;
+            visualProgress = 59.5 + t * 25;
+        } else {
+            const t = (ratio - 0.92) / 0.08;
+            visualProgress = 84.5 + t * 15.5;
+        }
+
+        visualProgress = Math.min(99, visualProgress);
+
+        progress.style.width = visualProgress + "%";
+        percent.textContent = Math.floor(visualProgress) + "%";
+
+        if (ratio < 1) {
+            requestAnimationFrame(updateProgress);
+        } else {
+            finishLoading();
+        }
+    }
+
+    function finishLoading() {
+
+        if (finished) {
+            return;
+        }
+
+        finished = true;
+
+        progress.style.width = "100%";
+        percent.textContent = "100%";
+        dots.textContent = "...";
+
+        setTimeout(function () {
+
+            iframe.classList.add("visible");
+
+            setTimeout(function () {
+                loader.classList.add("hidden");
+            }, 250);
+
+        }, 350);
+    }
+
+    function showError() {
+
+        if (finished) {
+            return;
+        }
+
+        finished = true;
+
+        loader.classList.add("hidden");
+        errorScreen.classList.add("show");
+    }
+
+    setInterval(function () {
+
+        if (finished) {
+            return;
+        }
+
+        if (gameReady) {
+            dots.textContent = "...";
+        } else if (iframeLoaded) {
+            dots.textContent = "..";
+        } else {
+            dots.textContent = ".";
+        }
+
+    }, 350);
+
+    updateProgress();
 
 })();
 </script>
