@@ -4,172 +4,100 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SheaGames</title>
+<title>SPIRE</title>
 <link rel="icon" type="image/png" href="./SPIRE.png">
 
 <style>
-* {
-    box-sizing: border-box;
-}
-
 html,
 body {
     margin: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
     background: #000;
-    color: #fff;
     overflow: hidden;
-    font-family: Arial, Helvetica, sans-serif;
 }
 
-#gameFrame {
+#game {
     position: fixed;
     inset: 0;
     width: 100%;
     height: 100%;
     border: 0;
+    margin: 0;
+    padding: 0;
     background: #000;
     display: block;
-    z-index: 1;
 }
 
-#loader {
+#tung-loader {
     position: fixed;
     inset: 0;
-    z-index: 10;
+    z-index: 9999;
     background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    transition: opacity 0.7s ease, visibility 0.7s ease;
+    transition: opacity 0.6s ease;
 }
 
-#loader.hidden {
+#tung-loader.fade {
     opacity: 0;
-    visibility: hidden;
     pointer-events: none;
 }
 
-.loaderContent {
-    width: min(90vw, 520px);
+.loader-content {
+    width: min(500px, 85vw);
     text-align: center;
 }
 
-.logo {
+.loader-logo {
     width: 164px;
     height: 164px;
     object-fit: contain;
     display: block;
-    margin: 0 auto 30px;
+    margin: 0 auto 28px;
 }
 
-.title {
-    font-size: 32px;
+.loader-title {
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
     font-weight: 800;
     letter-spacing: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 26px;
 }
 
-.subtitle {
-    font-size: 14px;
-    letter-spacing: 2px;
-    opacity: 0.65;
-    margin-bottom: 32px;
-}
-
-.progressOuter {
+.progress-container {
     width: 100%;
-    height: 10px;
+    height: 8px;
     border: 2px solid #fff;
     background: #000;
     overflow: hidden;
 }
 
-.progressInner {
+.progress-bar {
     width: 0%;
     height: 100%;
     background: #fff;
-    transform-origin: left center;
+    transition: width 0.12s linear;
 }
 
-.percent {
-    margin-top: 14px;
+.progress-text {
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 13px;
     letter-spacing: 2px;
+    margin-top: 14px;
 }
 
-.dots {
-    margin-top: 8px;
+.loading-dots {
+    color: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
     height: 20px;
-    font-size: 14px;
+    margin-top: 7px;
     letter-spacing: 3px;
-}
-
-#errorScreen {
-    position: fixed;
-    inset: 0;
-    z-index: 30;
-    background: #000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 30px;
-}
-
-#errorScreen.show {
-    display: flex;
-}
-
-.errorBox {
-    width: min(90vw, 600px);
-    border: 2px solid #fff;
-    padding: 35px;
-}
-
-.errorTitle {
-    font-size: 28px;
-    font-weight: 800;
-    margin-bottom: 15px;
-}
-
-.errorText {
-    font-size: 14px;
-    line-height: 1.6;
-    opacity: 0.7;
-}
-
-.retry {
-    margin-top: 25px;
-    padding: 12px 24px;
-    background: #fff;
-    color: #000;
-    border: 0;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.retry:hover {
-    background: #ddd;
-}
-
-#gameFrameWrap {
-    position: fixed;
-    inset: 0;
-    z-index: 2;
-    background: #000;
-    overflow: hidden;
-}
-
-#gameFrame {
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-#gameFrame.visible {
-    opacity: 1;
 }
 </style>
 
@@ -177,260 +105,150 @@ body {
 
 <body>
 
-<div id="gameFrameWrap">
-    <iframe
-        id="gameFrame"
-        title="SheaGames Game"
-        allow="fullscreen; autoplay; gamepad; clipboard-read; clipboard-write"
-        allowfullscreen
-        scrolling="no"
-        frameborder="0">
-    </iframe>
-</div>
+<iframe
+    id="game"
+    allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
+    allowfullscreen
+    frameborder="0"
+    scrolling="no">
+</iframe>
 
-<div id="loader">
-    <div class="loaderContent">
-        <img class="logo" src="./logo.png" alt="SheaGames">
+<div id="tung-loader">
+    <div class="loader-content">
 
 ```
-    <div class="title">SHEAGAMES</div>
-    <div class="subtitle">LOADING GAME</div>
+    <img
+        src="./logo.png"
+        class="loader-logo"
+        width="164"
+        height="164"
+        alt="SheaGames">
 
-    <div class="progressOuter">
-        <div id="progress" class="progressInner"></div>
+    <div class="loader-title">SHEAGAMES</div>
+
+    <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
     </div>
 
-    <div id="percent" class="percent">0%</div>
-    <div id="dots" class="dots">.</div>
+    <div id="progressText" class="progress-text">0%</div>
+
+    <div id="loadingDots" class="loading-dots">.</div>
+
 </div>
 ```
 
-</div>
-
-<div id="errorScreen">
-    <div class="errorBox">
-        <div class="errorTitle">GAME FAILED TO LOAD</div>
-        <div class="errorText">
-            The game could not be started.<br>
-            Check that the game file exists and try again.
-        </div>
-        <button class="retry" onclick="location.reload()">RETRY</button>
-    </div>
 </div>
 
 <script>
-(function () {
+const params = new URLSearchParams(window.location.search);
 
-    const params = new URLSearchParams(window.location.search);
-    let gameId = params.get("game");
+let gameId = params.get("game");
 
-    if (!/^\d+$/.test(gameId || "")) {
-        gameId = "1";
+if (!gameId || !/^\d+$/.test(gameId)) {
+    gameId = "1";
+}
+
+gameId = String(parseInt(gameId, 10));
+
+const game = document.getElementById("game");
+const loader = document.getElementById("tung-loader");
+const progressBar = document.getElementById("progressBar");
+const progressText = document.getElementById("progressText");
+const loadingDots = document.getElementById("loadingDots");
+
+let startTime = Date.now();
+let finished = false;
+
+const minimumTime = 15000;
+const maximumTime = 25000;
+
+const targetTime =
+    minimumTime +
+    Math.random() * (maximumTime - minimumTime);
+
+game.src = "./" + gameId + ".html";
+
+function animateLoader() {
+
+    if (finished) {
+        return;
     }
 
-    gameId = String(parseInt(gameId, 10));
+    const elapsed = Date.now() - startTime;
+    const raw = Math.min(elapsed / targetTime, 1);
 
-    const iframe = document.getElementById("gameFrame");
-    const loader = document.getElementById("loader");
-    const progress = document.getElementById("progress");
-    const percent = document.getElementById("percent");
-    const dots = document.getElementById("dots");
-    const errorScreen = document.getElementById("errorScreen");
+    let progress;
 
-    const MIN_TIME = 15000;
-    const MAX_TIME = 25000;
-
-    const targetTime =
-        MIN_TIME + Math.random() * (MAX_TIME - MIN_TIME);
-
-    const startTime = performance.now();
-
-    let iframeLoaded = false;
-    let gameReady = false;
-    let finished = false;
-
-    iframe.src = "./" + gameId + ".html";
-
-    iframe.addEventListener("load", function () {
-        iframeLoaded = true;
-
-        try {
-            const doc = iframe.contentDocument;
-
-            if (doc) {
-                const observer = new MutationObserver(function () {
-                    detectGame();
-                });
-
-                if (doc.documentElement) {
-                    observer.observe(doc.documentElement, {
-                        childList: true,
-                        subtree: true
-                    });
-                }
-
-                detectGame();
-            }
-        } catch (e) {
-            gameReady = true;
-        }
-    });
-
-    iframe.addEventListener("error", function () {
-        showError();
-    });
-
-    function detectGame() {
-        try {
-            const doc = iframe.contentDocument;
-
-            if (!doc) {
-                return;
-            }
-
-            const ruffle =
-                doc.querySelector("ruffle-player") ||
-                doc.querySelector("ruffle-embed") ||
-                doc.querySelector("canvas");
-
-            if (ruffle) {
-                gameReady = true;
-                return;
-            }
-
-            const bodyText =
-                (doc.body ? doc.body.innerText : "").toLowerCase();
-
-            if (
-                bodyText.includes("game could not be loaded") ||
-                bodyText.includes("404 not found") ||
-                bodyText.includes("page not found")
-            ) {
-                showError();
-            }
-
-        } catch (e) {
-            gameReady = true;
-        }
+    if (raw < 0.15) {
+        progress = raw / 0.15 * 8;
+    } else if (raw < 0.4) {
+        const t = (raw - 0.15) / 0.25;
+        progress = 8 + t * 19;
+    } else if (raw < 0.68) {
+        const t = (raw - 0.4) / 0.28;
+        progress = 27 + t * 27;
+    } else if (raw < 0.88) {
+        const t = (raw - 0.68) / 0.20;
+        progress = 54 + t * 29;
+    } else {
+        const t = (raw - 0.88) / 0.12;
+        progress = 83 + t * 16;
     }
 
-    window.addEventListener("message", function (event) {
+    progress = Math.min(progress, 99);
 
-        if (!event.data) {
-            return;
-        }
+    progressBar.style.width = progress + "%";
+    progressText.textContent = Math.floor(progress) + "%";
 
-        if (typeof event.data === "string") {
-            if (
-                event.data === "game-loaded" ||
-                event.data === "game-ready" ||
-                event.data === "ruffle-ready"
-            ) {
-                gameReady = true;
-            }
-        }
-
-        if (typeof event.data === "object") {
-            if (
-                event.data.type === "game-loaded" ||
-                event.data.type === "game-ready" ||
-                event.data.type === "ruffle-ready"
-            ) {
-                gameReady = true;
-            }
-        }
-    });
-
-    function updateProgress() {
-
-        if (finished) {
-            return;
-        }
-
-        const elapsed = performance.now() - startTime;
-        const ratio = Math.min(elapsed / targetTime, 1);
-
-        let visualProgress;
-
-        if (ratio < 0.35) {
-            visualProgress = ratio * 0.9;
-        } else if (ratio < 0.7) {
-            const t = (ratio - 0.35) / 0.35;
-            visualProgress = 31.5 + t * 28;
-        } else if (ratio < 0.92) {
-            const t = (ratio - 0.7) / 0.22;
-            visualProgress = 59.5 + t * 25;
-        } else {
-            const t = (ratio - 0.92) / 0.08;
-            visualProgress = 84.5 + t * 15.5;
-        }
-
-        visualProgress = Math.min(99, visualProgress);
-
-        progress.style.width = visualProgress + "%";
-        percent.textContent = Math.floor(visualProgress) + "%";
-
-        if (ratio < 1) {
-            requestAnimationFrame(updateProgress);
-        } else {
-            finishLoading();
-        }
+    if (raw >= 1) {
+        finishLoader();
+        return;
     }
 
-    function finishLoading() {
+    requestAnimationFrame(animateLoader);
+}
 
-        if (finished) {
-            return;
-        }
+function finishLoader() {
 
-        finished = true;
-
-        progress.style.width = "100%";
-        percent.textContent = "100%";
-        dots.textContent = "...";
-
-        setTimeout(function () {
-
-            iframe.classList.add("visible");
-
-            setTimeout(function () {
-                loader.classList.add("hidden");
-            }, 250);
-
-        }, 350);
+    if (finished) {
+        return;
     }
 
-    function showError() {
+    finished = true;
 
-        if (finished) {
-            return;
-        }
+    progressBar.style.width = "100%";
+    progressText.textContent = "100%";
+    loadingDots.textContent = "...";
 
-        finished = true;
+    setTimeout(() => {
+        loader.classList.add("fade");
 
-        loader.classList.add("hidden");
-        errorScreen.classList.add("show");
+        setTimeout(() => {
+            loader.style.display = "none";
+        }, 650);
+
+    }, 300);
+}
+
+let dotState = 0;
+
+setInterval(() => {
+
+    if (finished) {
+        return;
     }
 
-    setInterval(function () {
+    dotState++;
 
-        if (finished) {
-            return;
-        }
+    if (dotState > 3) {
+        dotState = 1;
+    }
 
-        if (gameReady) {
-            dots.textContent = "...";
-        } else if (iframeLoaded) {
-            dots.textContent = "..";
-        } else {
-            dots.textContent = ".";
-        }
+    loadingDots.textContent = ".".repeat(dotState);
 
-    }, 350);
+}, 400);
 
-    updateProgress();
-
-})();
+animateLoader();
 </script>
 
 </body>
