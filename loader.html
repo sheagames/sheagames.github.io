@@ -10,52 +10,45 @@
 <style>
 html,
 body {
+    width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
-    width: 100%;
-    min-height: 100%;
     background: #000;
-}
-
-body {
     overflow: hidden;
 }
 
-#gameContainer {
+#game {
     position: fixed;
     inset: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    display: block;
     background: #000;
-    overflow: auto;
-    z-index: 1;
-}
-
-#gameContainer iframe,
-#gameContainer object,
-#gameContainer embed {
-    width: 100%;
-    height: 100%;
+    opacity: 1;
+    visibility: visible;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
 }
 
 #loader {
     position: fixed;
     inset: 0;
     z-index: 999999;
+    width: 100vw;
+    height: 100vh;
     background: #000;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 1;
-    visibility: visible;
-    transition:
-        opacity 0.7s ease,
-        visibility 0.7s ease;
+    transition: opacity 0.65s ease;
 }
 
-#loader.hidden {
+#loader.hide {
     opacity: 0;
-    visibility: hidden;
     pointer-events: none;
 }
 
@@ -72,7 +65,7 @@ body {
     margin: 0 auto 30px;
 }
 
-.loaderTitle {
+.title {
     color: #fff;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30px;
@@ -90,9 +83,10 @@ body {
 }
 
 .progressInner {
-    width: 0%;
+    width: 0;
     height: 100%;
     background: #fff;
+    transform: translate3d(0, 0, 0);
 }
 
 .percent {
@@ -107,38 +101,43 @@ body {
     color: #fff;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
+    letter-spacing: 3px;
     height: 20px;
     margin-top: 7px;
-    letter-spacing: 3px;
 }
 
-#fallback {
+#recovery {
     position: fixed;
     inset: 0;
-    z-index: 1000000;
+    z-index: 999998;
     background: #000;
-    color: #fff;
     display: none;
     align-items: center;
     justify-content: center;
+}
+
+#recovery.show {
+    display: flex;
+}
+
+.recoveryBox {
+    width: min(500px, 85vw);
     text-align: center;
+    color: #fff;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#fallbackBox {
-    width: min(500px, 85vw);
-    border: 2px solid #fff;
-    padding: 30px;
+.recoveryTitle {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
 }
 
-#fallback button {
-    margin-top: 20px;
-    padding: 12px 24px;
-    border: 0;
-    background: #fff;
-    color: #000;
-    font-weight: 700;
-    cursor: pointer;
+.recoveryText {
+    font-size: 13px;
+    opacity: 0.65;
+    line-height: 1.6;
 }
 </style>
 
@@ -146,7 +145,14 @@ body {
 
 <body>
 
-<div id="gameContainer"></div>
+<iframe
+    id="game"
+    title="Game"
+    frameborder="0"
+    scrolling="no"
+    allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
+    allowfullscreen>
+</iframe>
 
 <div id="loader">
     <div class="loaderContent">
@@ -154,12 +160,12 @@ body {
 ```
     <img
         src="./logo.png"
+        class="logo"
         width="164"
         height="164"
-        class="logo"
         alt="SheaGames">
 
-    <div class="loaderTitle">SHEAGAMES</div>
+    <div class="title">SHEAGAMES</div>
 
     <div class="progressOuter">
         <div id="progress" class="progressInner"></div>
@@ -174,15 +180,24 @@ body {
 
 </div>
 
-<div id="fallback">
-    <div id="fallbackBox">
-        <div>GAME COULD NOT BE OPENED</div>
-        <button onclick="location.reload()">RETRY</button>
+<div id="recovery">
+    <div class="recoveryBox">
+        <div class="recoveryTitle">STARTING GAME</div>
+        <div class="recoveryText">
+            Reinitializing the game renderer...
+        </div>
     </div>
 </div>
 
 <script>
 (function () {
+
+    const game = document.getElementById("game");
+    const loader = document.getElementById("loader");
+    const recovery = document.getElementById("recovery");
+    const progress = document.getElementById("progress");
+    const percent = document.getElementById("percent");
+    const dots = document.getElementById("dots");
 
     const params = new URLSearchParams(window.location.search);
 
@@ -194,25 +209,13 @@ body {
 
     gameId = String(parseInt(gameId, 10));
 
-    const gameContainer =
-        document.getElementById("gameContainer");
+    const gameURL =
+        "./" +
+        gameId +
+        ".html?sheagames=" +
+        Date.now();
 
-    const loader =
-        document.getElementById("loader");
-
-    const progress =
-        document.getElementById("progress");
-
-    const percent =
-        document.getElementById("percent");
-
-    const dots =
-        document.getElementById("dots");
-
-    const fallback =
-        document.getElementById("fallback");
-
-    const startTime = performance.now();
+    let startTime = performance.now();
 
     const minimumTime = 15000;
     const maximumTime = 25000;
@@ -222,101 +225,107 @@ body {
         Math.random() *
         (maximumTime - minimumTime);
 
-    let finished = false;
+    let complete = false;
+    let recoveryStarted = false;
+    let reloadCount = 0;
 
     function loadGame() {
 
-        const frame = document.createElement("iframe");
+        game.src = "about:blank";
 
-        frame.src = "./" + gameId + ".html";
+        setTimeout(function () {
 
-        frame.setAttribute(
-            "allow",
-            "autoplay; fullscreen; gamepad; clipboard-read; clipboard-write"
-        );
+            game.src = gameURL;
 
-        frame.setAttribute(
-            "allowfullscreen",
-            ""
-        );
-
-        frame.setAttribute(
-            "frameborder",
-            "0"
-        );
-
-        frame.setAttribute(
-            "scrolling",
-            "no"
-        );
-
-        frame.style.position = "absolute";
-        frame.style.left = "0";
-        frame.style.top = "0";
-        frame.style.width = "100%";
-        frame.style.height = "100%";
-        frame.style.border = "0";
-        frame.style.margin = "0";
-        frame.style.padding = "0";
-        frame.style.background = "#000";
-
-        gameContainer.appendChild(frame);
+        }, 80);
     }
 
-    function updateLoader() {
+    function updateProgress() {
 
-        if (finished) {
+        if (complete) {
             return;
         }
 
         const elapsed =
             performance.now() - startTime;
 
-        const raw =
+        const ratio =
             Math.min(elapsed / targetTime, 1);
 
         let value;
 
-        if (raw < 0.12) {
-            value = raw / 0.12 * 5;
-        } else if (raw < 0.35) {
-            const t = (raw - 0.12) / 0.23;
-            value = 5 + t * 18;
-        } else if (raw < 0.62) {
-            const t = (raw - 0.35) / 0.27;
-            value = 23 + t * 29;
-        } else if (raw < 0.84) {
-            const t = (raw - 0.62) / 0.22;
-            value = 52 + t * 30;
-        } else if (raw < 0.96) {
-            const t = (raw - 0.84) / 0.12;
-            value = 82 + t * 14;
+        if (ratio < 0.10) {
+
+            value =
+                ratio / 0.10 * 4;
+
+        } else if (ratio < 0.30) {
+
+            const t =
+                (ratio - 0.10) / 0.20;
+
+            value =
+                4 + t * 13;
+
+        } else if (ratio < 0.55) {
+
+            const t =
+                (ratio - 0.30) / 0.25;
+
+            value =
+                17 + t * 25;
+
+        } else if (ratio < 0.78) {
+
+            const t =
+                (ratio - 0.55) / 0.23;
+
+            value =
+                42 + t * 28;
+
+        } else if (ratio < 0.93) {
+
+            const t =
+                (ratio - 0.78) / 0.15;
+
+            value =
+                70 + t * 22;
+
         } else {
-            const t = (raw - 0.96) / 0.04;
-            value = 96 + t * 4;
+
+            const t =
+                (ratio - 0.93) / 0.07;
+
+            value =
+                92 + t * 8;
         }
 
-        value = Math.min(99, value);
+        value =
+            Math.max(0, Math.min(99, value));
 
-        progress.style.width = value + "%";
+        progress.style.width =
+            value + "%";
+
         percent.textContent =
             Math.floor(value) + "%";
 
-        if (raw >= 1) {
-            finishLoader();
+        if (ratio >= 1) {
+
+            finish();
+
             return;
         }
 
-        requestAnimationFrame(updateLoader);
+        requestAnimationFrame(updateProgress);
     }
 
-    function finishLoader() {
+    function finish() {
 
-        if (finished) {
+        if (complete) {
             return;
         }
 
-        finished = true;
+        complete = true;
 
         progress.style.width = "100%";
         percent.textContent = "100%";
@@ -324,36 +333,124 @@ body {
 
         setTimeout(function () {
 
-            loader.classList.add("hidden");
+            loader.classList.add("hide");
 
             setTimeout(function () {
+
                 loader.style.display = "none";
+
+                forceRendererRecovery();
+
             }, 700);
 
-        }, 350);
+        }, 300);
     }
 
-    let dotCount = 1;
+    function forceRendererRecovery() {
 
-    setInterval(function () {
-
-        if (finished) {
+        if (recoveryStarted) {
             return;
         }
 
-        dotCount++;
+        recoveryStarted = true;
 
-        if (dotCount > 3) {
-            dotCount = 1;
+        setTimeout(function () {
+
+            try {
+
+                const doc =
+                    game.contentDocument ||
+                    game.contentWindow.document;
+
+                if (!doc) {
+                    return;
+                }
+
+                const canvas =
+                    doc.querySelector("canvas");
+
+                const ruffle =
+                    doc.querySelector("ruffle-player");
+
+                if (canvas || ruffle) {
+
+                    game.style.display = "block";
+
+                    game.style.opacity = "0.999";
+
+                    game.offsetHeight;
+
+                    game.style.opacity = "1";
+
+                    return;
+                }
+
+            } catch (e) {
+            }
+
+        }, 400);
+    }
+
+    game.addEventListener("load", function () {
+
+        game.style.display = "block";
+        game.style.visibility = "visible";
+        game.style.opacity = "1";
+        game.style.transform =
+            "translate3d(0,0,0)";
+
+        if (reloadCount === 0) {
+
+            setTimeout(function () {
+
+                try {
+
+                    const doc =
+                        game.contentDocument;
+
+                    if (!doc) {
+                        return;
+                    }
+
+                    const canvas =
+                        doc.querySelector("canvas");
+
+                    const ruffle =
+                        doc.querySelector("ruffle-player");
+
+                    if (!canvas && !ruffle) {
+                        return;
+                    }
+
+                } catch (e) {
+                }
+
+            }, 2500);
+        }
+
+    });
+
+    let dot = 0;
+
+    setInterval(function () {
+
+        if (complete) {
+            return;
+        }
+
+        dot++;
+
+        if (dot > 3) {
+            dot = 1;
         }
 
         dots.textContent =
-            ".".repeat(dotCount);
+            ".".repeat(dot);
 
     }, 400);
 
     loadGame();
-    requestAnimationFrame(updateLoader);
+    requestAnimationFrame(updateProgress);
 
 })();
 </script>
