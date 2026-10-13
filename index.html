@@ -420,7 +420,7 @@ Games
 <script>
 const GAME_COUNT=100,HOME_GAME_COUNT=8;
 let passwordLocked=false,transitionBusy=false;
-let passwordLocked=false,transitionBusy=false;
+const PASSWORD_CACHE_KEY="spirePassword";
 
 function getTodayKey(){
 const d=new Date();
@@ -626,6 +626,42 @@ bind("gamesButton2",showGames);
 bind("brandHome",showHome);
 bind("brandGames",showHome);
 
+function readCachedPassword(){
+try{
+return localStorage.getItem(PASSWORD_CACHE_KEY)||""
+}catch(error){
+return ""
+}
+}
+
+function cachePassword(password){
+try{
+localStorage.setItem(PASSWORD_CACHE_KEY,password)
+}catch(error){
+// Local storage may be unavailable in privacy-restricted browsers.
+}
+}
+
+function clearCachedPassword(){
+try{
+localStorage.removeItem(PASSWORD_CACHE_KEY)
+}catch(error){}
+}
+
+function unlockSite(){
+const screen=document.getElementById("passwordScreen");
+const box=document.getElementById("passwordBox");
+
+box.classList.add("entering");
+screen.classList.add("hidden");
+
+setTimeout(()=>{
+screen.style.display="none";
+website.style.display="block";
+renderHomeGames()
+},550)
+}
+
 function checkPassword(){
 if(passwordLocked)return;
 
@@ -633,28 +669,13 @@ const input=document.getElementById("passwordInput");
 const box=document.getElementById("passwordBox");
 
 if(input.value==="SHEA"){
-
-box.classList.add("entering");
-
-setTimeout(()=>{
-document.getElementById("passwordScreen").classList.add("hidden");
-
-setTimeout(()=>{
-document.getElementById("passwordScreen").style.display="none";
-website.style.display="block";
-renderHomeGames()
-},550)
-
-},100)
-
+cachePassword(input.value);
+unlockSite()
 }else{
-
 passwordLocked=true;
-
 box.classList.remove("errorState");
 void box.offsetWidth;
 box.classList.add("errorState");
-
 input.setAttribute("aria-invalid","true");
 
 setTimeout(()=>{
@@ -672,6 +693,19 @@ document.getElementById("passwordButton").addEventListener("click",checkPassword
 document.getElementById("passwordInput").addEventListener("keydown",event=>{
 if(event.key==="Enter")checkPassword()
 });
+
+// Restore the saved password on later visits and unlock automatically.
+const cachedPassword=readCachedPassword();
+if(cachedPassword){
+const input=document.getElementById("passwordInput");
+input.value=cachedPassword;
+if(cachedPassword==="SHEA"){
+unlockSite()
+}else{
+clearCachedPassword();
+input.value=""
+}
+}
 
 let lastScrollY=window.scrollY;
 let headerScrollOffset=0;
