@@ -339,49 +339,6 @@ animation-duration:.001ms!important;
 transition-duration:.001ms!important
 }
 } 
-#gameOverlay{
-position:fixed;inset:0;z-index:5000;display:none;background:#000;color:#fff
-}
-#gameOverlay.open{display:block}
-#gameTopbar{
-position:absolute;left:0;right:0;top:0;height:54px;z-index:4;
-display:flex;align-items:center;justify-content:space-between;gap:10px;
-padding:8px 14px;background:#000;border-bottom:1px solid #fff
-}
-#gameTopTitle{font-size:14px;font-weight:800;letter-spacing:1px}
-#gameControls{display:flex;gap:8px}
-.gameControl{
-height:34px;min-width:70px;padding:0 12px;background:#000;color:#fff;
-border:1px solid #fff;border-radius:0;font-size:12px;font-weight:700
-}
-.gameControl:hover{background:#fff;color:#000}
-#gameViewport{
-position:absolute;top:54px;left:0;right:0;bottom:0;background:#000
-}
-#activeGameFrame{
-display:block;width:100%;height:100%;border:0;margin:0;padding:0;
-background:#000
-}
-#gameLoadingOverlay{
-position:absolute;inset:54px 0 0;z-index:3;background:#000;color:#fff;
-display:flex;align-items:center;justify-content:center;transition:opacity .65s ease
-}
-#gameLoadingOverlay.fade{opacity:0;pointer-events:none}
-#gameLoadingContent{width:min(500px,85vw);text-align:center}
-#gameLoadingLogo{width:164px;height:164px;object-fit:contain;display:block;margin:0 auto 28px}
-#gameLoadingTitle{font-size:28px;font-weight:800;letter-spacing:4px;margin-bottom:24px}
-#gameLoadingTrack{height:10px;border:2px solid #fff;background:#000;overflow:hidden}
-#gameLoadingBar{height:100%;width:0;background:#fff}
-#gameLoadingPercent{font-size:12px;letter-spacing:2px;margin-top:13px}
-#gameLoadingDots{height:20px;margin-top:7px;letter-spacing:3px;font-size:14px}
-@media(max-width:600px){
-#gameTopbar{height:50px;padding:7px 9px}
-#gameViewport{top:50px}
-#gameLoadingOverlay{inset:50px 0 0}
-#gameTopTitle{font-size:12px}
-.gameControl{min-width:0;padding:0 9px}
-}
-
 </style>
 
 </head>
@@ -460,116 +417,10 @@ Games
 </div>
 
 
-<div id="gameOverlay" aria-hidden="true">
-  <div id="gameTopbar">
-    <div id="gameTopTitle">SHEAGAMES</div>
-    <div id="gameControls">
-      <button class="gameControl" id="gameBack" type="button">BACK</button>
-      <button class="gameControl" id="gameReload" type="button">RELOAD</button>
-      <button class="gameControl" id="gameFullscreen" type="button">FULLSCREEN</button>
-    </div>
-  </div>
-  <div id="gameViewport">
-    <iframe id="activeGameFrame" title="Game" allow="autoplay; fullscreen; gamepad; clipboard-read; clipboard-write" allowfullscreen></iframe>
-  </div>
-  <div id="gameLoadingOverlay">
-    <div id="gameLoadingContent">
-      <img id="gameLoadingLogo" src="./logo.png" width="164" height="164" alt="SheaGames">
-      <div id="gameLoadingTitle">SHEAGAMES</div>
-      <div id="gameLoadingTrack"><div id="gameLoadingBar"></div></div>
-      <div id="gameLoadingPercent">0%</div>
-      <div id="gameLoadingDots">.</div>
-    </div>
-  </div>
-</div>
-
 <script>
 const GAME_COUNT=100,HOME_GAME_COUNT=8;
 let passwordLocked=false,transitionBusy=false;
-let gameLoadAnimation=null;
-let gameLoadStarted=0;
-let currentGameNumber=1;
-
-function launchGame(number){
-currentGameNumber=Number(number)||1;
-const overlay=document.getElementById("gameOverlay");
-const frame=document.getElementById("activeGameFrame");
-const loading=document.getElementById("gameLoadingOverlay");
-const bar=document.getElementById("gameLoadingBar");
-const pct=document.getElementById("gameLoadingPercent");
-const dots=document.getElementById("gameLoadingDots");
-
-overlay.classList.add("open");
-overlay.setAttribute("aria-hidden","false");
-document.body.style.overflow="hidden";
-loading.classList.remove("fade");
-loading.style.display="flex";
-bar.style.width="0%";
-pct.textContent="0%";
-dots.textContent=".";
-document.getElementById("gameTopTitle").textContent="SHEAGAMES — GAME "+currentGameNumber;
-
-if(gameLoadAnimation)cancelAnimationFrame(gameLoadAnimation);
-gameLoadStarted=performance.now();
-const target=15000+Math.random()*10000;
-
-frame.src="about:blank";
-setTimeout(()=>{
-frame.src="./"+currentGameNumber+".html";
-},50);
-
-function tick(now){
-const ratio=Math.min((now-gameLoadStarted)/target,1);
-let value;
-if(ratio<.15)value=ratio/.15*7;
-else if(ratio<.38)value=7+(ratio-.15)/.23*18;
-else if(ratio<.68)value=25+(ratio-.38)/.30*29;
-else if(ratio<.88)value=54+(ratio-.68)/.20*29;
-else value=83+(ratio-.88)/.12*16;
-value=Math.min(99,value);
-bar.style.width=value+"%";
-pct.textContent=Math.floor(value)+"%";
-dots.textContent=".".repeat(1+(Math.floor(now/400)%3));
-if(ratio>=1){
-bar.style.width="100%";
-pct.textContent="100%";
-setTimeout(()=>{
-loading.classList.add("fade");
-setTimeout(()=>{loading.style.display="none"},700);
-},250);
-return;
-}
-gameLoadAnimation=requestAnimationFrame(tick);
-}
-gameLoadAnimation=requestAnimationFrame(tick);
-}
-
-function closeGame(){
-const overlay=document.getElementById("gameOverlay");
-const frame=document.getElementById("activeGameFrame");
-if(gameLoadAnimation)cancelAnimationFrame(gameLoadAnimation);
-overlay.classList.remove("open");
-overlay.setAttribute("aria-hidden","true");
-frame.src="about:blank";
-document.body.style.overflow="";
-if(document.fullscreenElement){
-document.exitFullscreen().catch(()=>{});
-}
-}
-
-document.getElementById("gameBack").addEventListener("click",closeGame);
-document.getElementById("gameReload").addEventListener("click",()=>{
-launchGame(currentGameNumber);
-});
-document.getElementById("gameFullscreen").addEventListener("click",()=>{
-const target=document.getElementById("gameViewport");
-if(target.requestFullscreen)target.requestFullscreen().catch(()=>{});
-});
-document.addEventListener("keydown",event=>{
-if(event.key==="Escape"&&document.getElementById("gameOverlay").classList.contains("open")){
-closeGame();
-}
-});
+let passwordLocked=false,transitionBusy=false;
 
 function getTodayKey(){
 const d=new Date();
@@ -643,12 +494,9 @@ card.className="game";
 
 const link=document.createElement("a");
 link.className="gameLink";
-link.href="#play-"+encodeURIComponent(number);
-
-link.addEventListener("click",event=>{
-event.preventDefault();
+link.href="./"+number+".html";
+link.addEventListener("click",()=>{
 recordVisit(number);
-launchGame(number)
 });
 
 const img=document.createElement("img");
